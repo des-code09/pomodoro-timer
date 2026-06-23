@@ -1,1 +1,64 @@
-/* We'll add our styles here */
+:root {
+  /* Palette — sampled from brand gradient (dark → light) */
+  --color-blue-900: #03045a;
+  --color-blue-800: #183d85;
+  --color-blue-700: #3375b1;
+  --color-blue-600: #4294c3;
+  --color-blue-500: #51b2d4;
+  --color-blue-400: #6fc8e1;
+  --color-blue-300: #a2deed;
+  --color-blue-200: #bae7f2;
+  --color-blue-100: #d2eff7;
+
+  /* Light theme — base */
+  --color-bg: var(--color-blue-100);
+  --color-surface: #ffffff;
+  --color-text: var(--color-blue-900);
+  --color-text-muted: var(--color-blue-800);
+  --color-border: var(--color-blue-300);
+
+  /* Work mode — focused, deeper blues */
+  --color-work-accent: var(--color-blue-700);
+  --color-work-accent-hover: var(--color-blue-800);
+  --color-work-bg: var(--color-blue-200);
+  --color-work-surface: #ffffff;
+  --color-work-text: var(--color-blue-900);
+
+  /* Break mode — calm, lighter blues */
+  --color-break-accent: var(--color-blue-400);
+  --color-break-accent-hover: var(--color-blue-500);
+  --color-break-bg: var(--color-blue-100);
+  --color-break-surface: #ffffff;
+  --color-break-text: var(--color-blue-800);
+
+  /* Spacing */
+  --space-xs: 0.25rem;
+  --space-sm: 0.5rem;
+  --space-md: 1rem;
+  --space-lg: 1.5rem;
+  --space-xl: 2.5rem;
+
+  /* Typography */
+  --font-body: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-mono: "JetBrains Mono", "SF Mono", "Fira Code", ui-monospace, monospace;
+
+  --font-size-xs: 0.75rem;
+  --font-size-sm: 0.875rem;
+  --font-size-md: 1rem;
+  --font-size-lg: 1.25rem;
+  --font-size-xl: 1.5rem;
+  --font-size-timer: clamp(3rem, 12vw, 5rem);
+
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --line-height-body: 1.5;
+  --line-height-tight: 1.2;
+
+  /* Border radius — lg matches palette strip (~16px) */
+  --radius-sm: 0.375rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 1rem;
+  --radius-xl: 1.5rem;
+  --radius-full: 9999px;
+}
