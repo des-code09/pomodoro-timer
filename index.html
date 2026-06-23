@@ -33,6 +33,52 @@
                     Reset
                 </button>
             </div>
+
+            <section class="settings-panel" aria-labelledby="settings-heading">
+                <h2 class="settings-panel__heading" id="settings-heading">Settings</h2>
+
+                <div class="settings-panel__fields">
+                    <div class="settings-panel__field">
+                        <label class="settings-panel__label" for="work-duration">
+                            Work duration (minutes)
+                        </label>
+                        <input
+                            class="settings-panel__input"
+                            type="number"
+                            id="work-duration"
+                            name="work-duration"
+                            min="1"
+                            max="120"
+                            value="25"
+                            inputmode="numeric"
+                        />
+                    </div>
+
+                    <div class="settings-panel__field">
+                        <label class="settings-panel__label" for="break-duration">
+                            Break duration (minutes)
+                        </label>
+                        <input
+                            class="settings-panel__input"
+                            type="number"
+                            id="break-duration"
+                            name="break-duration"
+                            min="1"
+                            max="60"
+                            value="5"
+                            inputmode="numeric"
+                        />
+                    </div>
+                </div>
+
+                <button
+                    type="button"
+                    class="pomodoro-timer__button pomodoro-timer__button--secondary settings-panel__apply"
+                    id="apply-settings-btn"
+                >
+                    Apply settings
+                </button>
+            </section>
         </main>
     </div>
     <script type="module" src="/src/main.js"></script>

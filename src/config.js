@@ -1,2 +1,2 @@
-export const WORK_DURATION = 30;
-export const BREAK_DURATION = 10;
+export const DEFAULT_WORK_MINUTES = 25;
+export const DEFAULT_BREAK_MINUTES = 5;
