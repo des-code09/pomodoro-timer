@@ -4,10 +4,39 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pomodoro Timer</title>
-    <link rel="stylesheet" href="/src/style.css">
 </head>
 <body>
-    <div id="app"></div>
+    <div id="app" data-mode="work">
+        <main class="pomodoro-timer">
+            <p class="pomodoro-timer__mode" id="mode-indicator">Work</p>
+
+            <div
+                class="pomodoro-timer__display time-display"
+                id="time-display"
+                role="timer"
+                aria-live="polite"
+            >
+                25:00
+            </div>
+
+            <div class="pomodoro-timer__controls">
+                <button
+                    type="button"
+                    class="pomodoro-timer__button pomodoro-timer__button--primary"
+                    id="start-pause-btn"
+                >
+                    Start
+                </button>
+                <button
+                    type="button"
+                    class="pomodoro-timer__button pomodoro-timer__button--secondary"
+                    id="reset-btn"
+                >
+                    Reset
+                </button>
+            </div>
+        </main>
+    </div>
     <script type="module" src="/src/main.js"></script>
 </body>
 </html>
