@@ -17,6 +17,45 @@ let isRunning = false;
 let currentMode = 'work';
 let intervalId = null;
 let notificationTimeoutId = null;
+let audioContext = null;
+
+function ensureAudioContext() {
+  if (!audioContext) {
+    audioContext = new AudioContext();
+  }
+
+  if (audioContext.state === 'suspended') {
+    return audioContext.resume();
+  }
+
+  return Promise.resolve();
+}
+
+function playNotificationSound() {
+  ensureAudioContext()
+    .then(() => {
+      if (!audioContext) return;
+
+      const now = audioContext.currentTime;
+
+      [0, 0.25].forEach((offset) => {
+        const oscillator = audioContext.createOscillator();
+        const gain = audioContext.createGain();
+
+        oscillator.connect(gain);
+        gain.connect(audioContext.destination);
+        oscillator.type = 'sine';
+        oscillator.frequency.value = 880;
+        gain.gain.setValueAtTime(0.25, now + offset);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + offset + 0.3);
+        oscillator.start(now + offset);
+        oscillator.stop(now + offset + 0.3);
+      });
+    })
+    .catch(() => {
+      // Audio may be unavailable in unsupported environments.
+    });
+}
 
 function formatTime(seconds) {
   const mins = Math.floor(seconds / 60);
@@ -28,35 +67,33 @@ function getDurationForMode(mode) {
   return mode === 'work' ? workDuration : breakDuration;
 }
 
-function parseMinutesInput(input) {
-  const value = Number.parseInt(input.value, 10);
-  const min = Number.parseInt(input.min, 10);
-  const max = Number.parseInt(input.max, 10);
+function parseDurationInput(input) {
+  const match = input.value.trim().match(/^(\d+):(\d{1,2})$/);
 
-  if (Number.isNaN(value)) {
+  if (!match) {
     return null;
   }
 
-  return Math.min(max, Math.max(min, value));
+  const minutes = Number.parseInt(match[1], 10);
+  const seconds = Number.parseInt(match[2], 10);
+  const minTotal = Number.parseInt(input.dataset.minSeconds, 10);
+  const maxTotal = Number.parseInt(input.dataset.maxSeconds, 10);
+
+  if (seconds >= 60 || Number.isNaN(minutes) || Number.isNaN(seconds)) {
+    return null;
+  }
+
+  const totalSeconds = minutes * 60 + seconds;
+
+  if (totalSeconds < minTotal || totalSeconds > maxTotal) {
+    return null;
+  }
+
+  return totalSeconds;
 }
 
-function playNotificationSound() {
-  try {
-    const ctx = new AudioContext();
-    const oscillator = ctx.createOscillator();
-    const gain = ctx.createGain();
-
-    oscillator.connect(gain);
-    gain.connect(ctx.destination);
-    oscillator.type = 'sine';
-    oscillator.frequency.value = 880;
-    gain.gain.setValueAtTime(0.25, ctx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.6);
-    oscillator.start(ctx.currentTime);
-    oscillator.stop(ctx.currentTime + 0.6);
-  } catch {
-    // Audio may be unavailable until user interaction or in unsupported environments.
-  }
+function setDurationInputValue(input, totalSeconds) {
+  input.value = formatTime(totalSeconds);
 }
 
 function showVisualNotification(completedMode) {
@@ -72,7 +109,6 @@ function showVisualNotification(completedMode) {
 }
 
 function notifyTimerComplete(completedMode) {
-  playNotificationSound();
   showVisualNotification(completedMode);
 }
 
@@ -90,6 +126,20 @@ function updateDOM() {
 function switchMode() {
   currentMode = currentMode === 'work' ? 'break' : 'work';
   timeRemaining = getDurationForMode(currentMode);
+  app.dataset.mode = currentMode;
+  playNotificationSound();
+  triggerBackgroundFlash();
+}
+
+function triggerBackgroundFlash() {
+  app.classList.remove('mode-switch-flash');
+  void app.offsetWidth;
+  app.classList.add('mode-switch-flash');
+  app.addEventListener(
+    'animationend',
+    () => app.classList.remove('mode-switch-flash'),
+    { once: true },
+  );
 }
 
 function tick() {
@@ -106,6 +156,7 @@ function tick() {
 
 function startTimer() {
   if (isRunning) return;
+  ensureAudioContext();
   isRunning = true;
   intervalId = setInterval(tick, 1000);
   updateDOM();
@@ -132,23 +183,24 @@ function reset() {
   currentMode = 'work';
   timeRemaining = workDuration;
   timeDisplay.classList.remove('time-display--complete');
+  app.classList.remove('mode-switch-flash');
   clearTimeout(notificationTimeoutId);
   updateDOM();
 }
 
 function applySettings() {
-  const workMinutes = parseMinutesInput(workDurationInput);
-  const breakMinutes = parseMinutesInput(breakDurationInput);
+  const workSeconds = parseDurationInput(workDurationInput);
+  const breakSeconds = parseDurationInput(breakDurationInput);
 
-  if (workMinutes === null || breakMinutes === null) {
+  if (workSeconds === null || breakSeconds === null) {
     return;
   }
 
-  workDurationInput.value = workMinutes;
-  breakDurationInput.value = breakMinutes;
+  setDurationInputValue(workDurationInput, workSeconds);
+  setDurationInputValue(breakDurationInput, breakSeconds);
 
-  workDuration = workMinutes * 60;
-  breakDuration = breakMinutes * 60;
+  workDuration = workSeconds;
+  breakDuration = breakSeconds;
 
   if (!isRunning) {
     timeRemaining = getDurationForMode(currentMode);
@@ -156,8 +208,8 @@ function applySettings() {
   }
 }
 
-workDurationInput.value = DEFAULT_WORK_MINUTES;
-breakDurationInput.value = DEFAULT_BREAK_MINUTES;
+setDurationInputValue(workDurationInput, DEFAULT_WORK_MINUTES * 60);
+setDurationInputValue(breakDurationInput, DEFAULT_BREAK_MINUTES * 60);
 
 startPauseBtn.addEventListener('click', toggleStartPause);
 resetBtn.addEventListener('click', reset);
