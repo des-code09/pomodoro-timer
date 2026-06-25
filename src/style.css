@@ -151,6 +151,13 @@ body {
   font-variant-numeric: tabular-nums;
 }
 
+.pomodoro-timer__count {
+  margin: 0;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-muted);
+}
+
 #app[data-mode="work"] .time-display {
   color: var(--color-work);
 }

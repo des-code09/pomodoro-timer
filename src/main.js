@@ -1,5 +1,13 @@
 import './style.css';
 import { DEFAULT_WORK_MINUTES, DEFAULT_BREAK_MINUTES } from './config.js';
+import { loadState, saveState } from './storage.js';
+
+const defaultSettings = {
+  workDurationSeconds: DEFAULT_WORK_MINUTES * 60,
+  breakDurationSeconds: DEFAULT_BREAK_MINUTES * 60,
+};
+
+const persisted = loadState(defaultSettings);
 
 const app = document.getElementById('app');
 const modeIndicator = document.getElementById('mode-indicator');
@@ -9,15 +17,111 @@ const resetBtn = document.getElementById('reset-btn');
 const workDurationInput = document.getElementById('work-duration');
 const breakDurationInput = document.getElementById('break-duration');
 const applySettingsBtn = document.getElementById('apply-settings-btn');
+const pomodoroCountEl = document.getElementById('pomodoro-count');
 
-let workDuration = DEFAULT_WORK_MINUTES * 60;
-let breakDuration = DEFAULT_BREAK_MINUTES * 60;
-let timeRemaining = workDuration;
+let workDuration = persisted.settings.workDurationSeconds;
+let breakDuration = persisted.settings.breakDurationSeconds;
+let sessions = persisted.sessions;
+let currentMode = persisted.timer.currentMode;
+let timeRemaining = persisted.timer.timeRemaining;
 let isRunning = false;
-let currentMode = 'work';
 let intervalId = null;
 let notificationTimeoutId = null;
 let audioContext = null;
+
+function getTimerSnapshot() {
+  return {
+    currentMode,
+    timeRemaining,
+    isRunning,
+    endsAt: isRunning ? Date.now() + timeRemaining * 1000 : null,
+  };
+}
+
+function persistState() {
+  saveState({
+    settings: {
+      workDurationSeconds: workDuration,
+      breakDurationSeconds: breakDuration,
+    },
+    sessions,
+    timer: getTimerSnapshot(),
+  });
+}
+
+function addCompletedSession(completedAt) {
+  sessions.push({
+    completedAt,
+    workDurationSeconds: workDuration,
+  });
+}
+
+function flipMode(mode) {
+  return mode === 'work' ? 'break' : 'work';
+}
+
+function catchUpTimerState(timer) {
+  if (!timer.isRunning || timer.endsAt === null) {
+    return {
+      currentMode: timer.currentMode,
+      timeRemaining: timer.timeRemaining,
+      shouldResume: false,
+    };
+  }
+
+  let mode = timer.currentMode;
+  let remainingMs = timer.endsAt - Date.now();
+  let deadline = timer.endsAt;
+
+  while (remainingMs <= 0) {
+    if (mode === 'work') {
+      addCompletedSession(new Date(deadline).toISOString());
+    }
+
+    mode = flipMode(mode);
+    deadline += getDurationForMode(mode) * 1000;
+    remainingMs = deadline - Date.now();
+  }
+
+  return {
+    currentMode: mode,
+    timeRemaining: Math.ceil(remainingMs / 1000),
+    shouldResume: true,
+  };
+}
+
+function restoreTimerState() {
+  const restored = catchUpTimerState(persisted.timer);
+
+  currentMode = restored.currentMode;
+  timeRemaining = restored.timeRemaining;
+
+  if (restored.shouldResume && timeRemaining > 0) {
+    startTimer();
+    return;
+  }
+
+  if (restored.shouldResume && timeRemaining <= 0) {
+    const completedMode = currentMode;
+
+    if (completedMode === 'work') {
+      addCompletedSession(new Date().toISOString());
+    }
+
+    switchMode();
+  }
+
+  persistState();
+}
+
+function recordCompletedPomodoro() {
+  addCompletedSession(new Date().toISOString());
+}
+
+function formatPomodoroCount(count) {
+  const label = count === 1 ? 'pomodoro' : 'pomodoros';
+  return `${count} ${label} completed`;
+}
 
 function ensureAudioContext() {
   if (!audioContext) {
@@ -121,6 +225,7 @@ function updateDOM() {
 
   app.dataset.mode = currentMode;
   startPauseBtn.textContent = isRunning ? 'Pause' : 'Start';
+  pomodoroCountEl.textContent = formatPomodoroCount(sessions.length);
 }
 
 function switchMode() {
@@ -147,8 +252,17 @@ function tick() {
 
   if (timeRemaining <= 0) {
     const completedMode = currentMode;
+
+    if (completedMode === 'work') {
+      recordCompletedPomodoro();
+    }
+
     notifyTimerComplete(completedMode);
     switchMode();
+
+    if (isRunning) {
+      persistState();
+    }
   }
 
   updateDOM();
@@ -159,6 +273,7 @@ function startTimer() {
   ensureAudioContext();
   isRunning = true;
   intervalId = setInterval(tick, 1000);
+  persistState();
   updateDOM();
 }
 
@@ -167,6 +282,7 @@ function pauseTimer() {
   isRunning = false;
   clearInterval(intervalId);
   intervalId = null;
+  persistState();
   updateDOM();
 }
 
@@ -185,6 +301,7 @@ function reset() {
   timeDisplay.classList.remove('time-display--complete');
   app.classList.remove('mode-switch-flash');
   clearTimeout(notificationTimeoutId);
+  persistState();
   updateDOM();
 }
 
@@ -206,13 +323,17 @@ function applySettings() {
     timeRemaining = getDurationForMode(currentMode);
     updateDOM();
   }
+
+  persistState();
 }
 
-setDurationInputValue(workDurationInput, DEFAULT_WORK_MINUTES * 60);
-setDurationInputValue(breakDurationInput, DEFAULT_BREAK_MINUTES * 60);
+setDurationInputValue(workDurationInput, workDuration);
+setDurationInputValue(breakDurationInput, breakDuration);
 
 startPauseBtn.addEventListener('click', toggleStartPause);
 resetBtn.addEventListener('click', reset);
 applySettingsBtn.addEventListener('click', applySettings);
+window.addEventListener('pagehide', persistState);
 
+restoreTimerState();
 updateDOM();
