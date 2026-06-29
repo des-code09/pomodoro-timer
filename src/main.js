@@ -458,10 +458,7 @@ function updateDOM() {
   }
 
   app.dataset.mode = currentMode;
-
-  if (!isRunning) {
-    updateDayProgress();
-  }
+  updateDayProgress();
 
   startPauseBtn.textContent = isRunning ? 'Pause' : 'Start';
   pomodoroCountEl.textContent = formatPomodoroCount(sessions.length);
@@ -677,6 +674,19 @@ setDurationInputValue(workDurationInput, workDuration);
 setDurationInputValue(breakDurationInput, breakDuration);
 setDurationInputValue(longBreakDurationInput, longBreakDuration);
 
+function initializeApp() {
+  app.classList.add('ui-snap');
+  restoreTimerState();
+  updateDOM();
+  document.documentElement.classList.add('app-ready');
+
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      app.classList.remove('ui-snap');
+    });
+  });
+}
+
 startPauseBtn.addEventListener('click', toggleStartPause);
 resetBtn.addEventListener('click', reset);
 applySettingsBtn.addEventListener('click', applySettings);
@@ -686,5 +696,4 @@ applySettingsBtn.addEventListener('click', applySettings);
 window.addEventListener('keydown', handleKeyboardShortcut);
 window.addEventListener('pagehide', persistState);
 
-restoreTimerState();
-updateDOM();
+initializeApp();

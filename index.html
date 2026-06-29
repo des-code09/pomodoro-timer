@@ -4,9 +4,25 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pomodoro Timer</title>
+    <style>
+      body {
+        margin: 0;
+        background: #0f0820;
+      }
+
+      html:not(.app-ready) #app {
+        visibility: hidden;
+      }
+
+      html:not(.app-ready) #app,
+      html:not(.app-ready) #app * {
+        transition: none !important;
+        animation: none !important;
+      }
+    </style>
 </head>
 <body>
-    <div id="app" data-mode="work" data-ui-theme="day" style="--day-progress: 0; --scene-day-blend: 100%; --scene-night-blend: 0%; --ui-day-blend: 100%; --ui-night-blend: 0%; --twilight-glow: 0; --card-surface-opacity: 84%; --orb-top: 10%">
+    <div id="app" data-mode="work" data-ui-theme="day">
         <div class="pomodoro-scene" aria-hidden="true">
             <div class="pomodoro-scene__sky"></div>
 
