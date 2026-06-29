@@ -1,37 +1,79 @@
 :root {
-  /* Palette — sampled from brand gradient (dark → light) */
-  --color-blue-900: #03045a;
-  --color-blue-800: #183d85;
-  --color-blue-700: #3375b1;
-  --color-blue-600: #4294c3;
-  --color-blue-500: #51b2d4;
-  --color-blue-400: #6fc8e1;
-  --color-blue-300: #a2deed;
-  --color-blue-200: #bae7f2;
-  --color-blue-100: #d2eff7;
+  /*
+   * Palette — warm pastel (derived from reference swatches)
+   * Plum/violet tones: text, borders, buttons
+   * Warm creams/blush: page and surface backgrounds only
+   */
+  --color-plum-900: #3f3650;
+  --color-plum-800: #544764;
+  --color-plum-700: #6a5c7c;
+  --color-plum-600: #7d6e91;
+  --color-plum-500: #9485a5;
+  --color-plum-400: #a895b3;
+  --color-plum-300: #c4b6cf;
+  --color-plum-200: #d9cee3;
+  --color-plum-100: #ebe3f0;
 
-  /* Light theme — base */
-  --color-bg: var(--color-blue-100);
-  --color-surface: #ffffff;
-  --color-text: var(--color-blue-900);
-  --color-text-muted: var(--color-blue-800);
-  --color-border: var(--color-blue-300);
+  --color-warm-100: #fdf8f4;
+  --color-warm-200: #f7ede6;
+  --color-warm-300: #f0e0d8;
+  --color-warm-400: #e8d0de;
+  --color-warm-500: #dcc8df;
 
-  /* Work mode — focused, deeper blues */
-  --color-work-accent: var(--color-blue-700);
-  --color-work-accent-hover: var(--color-blue-800);
-  --color-work-bg: var(--color-blue-200);
-  --color-work-surface: #ffffff;
-  --color-work-text: var(--color-blue-900);
+  /* Semantic — page & card */
+  --color-bg: var(--color-warm-200);
+  --color-surface: var(--color-warm-100);
+  --color-border: var(--color-plum-300);
+  --color-border-subtle: var(--color-plum-200);
+
+  /* Semantic — typography */
+  --color-text-primary: var(--color-plum-900);
+  --color-text-secondary: var(--color-plum-500);
+  --color-text-heading: var(--color-plum-600);
+  --color-text: var(--color-text-primary);
+  --color-text-muted: var(--color-text-secondary);
+
+  /* Semantic — text inputs */
+  --color-input-bg: var(--color-surface);
+  --color-input-border: var(--color-border-subtle);
+  --color-input-border-hover: var(--color-border);
+  --color-input-border-focus: var(--color-plum-600);
+  --color-input-text: var(--color-text-primary);
+  --color-input-placeholder: color-mix(in srgb, var(--color-text-secondary) 80%, transparent);
+  --color-input-shadow: inset 0 1px 2px color-mix(in srgb, var(--color-plum-900) 6%, transparent);
+  --color-input-focus-ring: color-mix(in srgb, var(--color-plum-600) 25%, transparent);
+
+  /* Semantic — primary buttons */
+  --color-button-primary-bg: var(--color-plum-700);
+  --color-button-primary-bg-hover: var(--color-plum-800);
+  --color-button-primary-text: #ffffff;
+
+  /* Semantic — secondary buttons */
+  --color-button-secondary-bg: var(--color-plum-100);
+  --color-button-secondary-bg-hover: var(--color-plum-300);
+  --color-button-secondary-text: var(--color-text-primary);
+  --color-button-secondary-border: transparent;
+  --color-button-secondary-border-hover: var(--color-plum-500);
+
+  /* Work mode — deeper plum (periwinkle swatch) */
+  --color-work-accent: var(--color-plum-700);
+  --color-work-accent-hover: var(--color-plum-800);
+  --color-work-bg: var(--color-warm-400);
+  --color-work-surface: var(--color-surface);
+  --color-work-text: var(--color-text-primary);
   --color-work: var(--color-work-text);
+  --color-work-button-secondary-bg-hover: var(--color-plum-300);
+  --color-work-button-secondary-border-hover: var(--color-work-accent);
 
-  /* Break mode — calm, lighter blues */
-  --color-break-accent: var(--color-blue-400);
-  --color-break-accent-hover: var(--color-blue-500);
-  --color-break-bg: var(--color-blue-100);
-  --color-break-surface: #ffffff;
-  --color-break-text: var(--color-blue-800);
+  /* Break mode — softer lavender (mauve swatch) */
+  --color-break-accent: var(--color-plum-500);
+  --color-break-accent-hover: var(--color-plum-600);
+  --color-break-bg: var(--color-warm-500);
+  --color-break-surface: var(--color-surface);
+  --color-break-text: var(--color-text-primary);
   --color-break: var(--color-break-text);
+  --color-break-button-secondary-bg-hover: var(--color-plum-200);
+  --color-break-button-secondary-border-hover: var(--color-break-accent);
 
   /* Spacing */
   --space-xs: 0.25rem;
@@ -39,6 +81,7 @@
   --space-md: 1rem;
   --space-lg: 1.5rem;
   --space-xl: 2.5rem;
+  --space-2xl: 3rem;
 
   /* Typography */
   --font-body: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
@@ -78,7 +121,7 @@ body {
   font-size: var(--font-size-md);
   font-weight: var(--font-weight-normal);
   line-height: var(--line-height-body);
-  color: var(--color-text);
+  color: var(--color-text-primary);
   background-color: var(--color-bg);
 }
 
@@ -108,24 +151,39 @@ body {
 #app[data-mode="work"] {
   --color-accent: var(--color-work-accent);
   --color-accent-hover: var(--color-work-accent-hover);
-  --color-mode-bg: var(--color-work-bg);
   --color-mode-surface: var(--color-work-surface);
   --color-mode-text: var(--color-work-text);
+  --color-input-border-focus: var(--color-work-accent);
+  --color-input-focus-ring: color-mix(in srgb, var(--color-work-accent) 25%, transparent);
+  --color-button-primary-bg: var(--color-work-accent);
+  --color-button-primary-bg-hover: var(--color-work-accent-hover);
+  --color-button-secondary-bg: var(--color-work-bg);
+  --color-button-secondary-bg-hover: var(--color-work-button-secondary-bg-hover);
+  --color-button-secondary-text: var(--color-work-text);
+  --color-button-secondary-border-hover: var(--color-work-button-secondary-border-hover);
 }
 
-#app[data-mode="break"] {
+#app[data-mode="break"],
+#app[data-mode="long-break"] {
   --color-accent: var(--color-break-accent);
   --color-accent-hover: var(--color-break-accent-hover);
-  --color-mode-bg: var(--color-break-bg);
   --color-mode-surface: var(--color-break-surface);
   --color-mode-text: var(--color-break-text);
+  --color-input-border-focus: var(--color-break-accent);
+  --color-input-focus-ring: color-mix(in srgb, var(--color-break-accent) 25%, transparent);
+  --color-button-primary-bg: var(--color-break-accent);
+  --color-button-primary-bg-hover: var(--color-break-accent-hover);
+  --color-button-secondary-bg: var(--color-break-bg);
+  --color-button-secondary-bg-hover: var(--color-break-button-secondary-bg-hover);
+  --color-button-secondary-text: var(--color-break-text);
+  --color-button-secondary-border-hover: var(--color-break-button-secondary-border-hover);
 }
 
 .pomodoro-timer {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: var(--space-lg);
+  gap: 0;
   width: 100%;
   max-width: 24rem;
   padding: var(--space-xl);
@@ -134,11 +192,20 @@ body {
   border-radius: var(--radius-xl);
 }
 
+.pomodoro-timer__timer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-sm);
+  width: 100%;
+  margin-bottom: var(--space-lg);
+}
+
 .pomodoro-timer__mode {
   margin: 0;
   font-size: var(--font-size-sm);
   font-weight: var(--font-weight-semibold);
-  letter-spacing: 0.08em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--color-accent);
 }
@@ -146,30 +213,82 @@ body {
 .pomodoro-timer__display {
   font-family: var(--font-mono);
   font-size: var(--font-size-timer);
-  font-weight: var(--font-weight-medium);
-  line-height: var(--line-height-tight);
+  font-weight: var(--font-weight-semibold);
+  line-height: 1;
   font-variant-numeric: tabular-nums;
-}
-
-.pomodoro-timer__count {
-  margin: 0;
-  font-size: var(--font-size-sm);
-  font-weight: var(--font-weight-medium);
-  color: var(--color-text-muted);
-}
-
-#app[data-mode="work"] .time-display {
-  color: var(--color-work);
-}
-
-#app[data-mode="break"] .time-display {
-  color: var(--color-break);
 }
 
 .pomodoro-timer__controls {
   display: flex;
   gap: var(--space-sm);
   width: 100%;
+  margin-bottom: var(--space-xl);
+}
+
+.pomodoro-timer__section-heading {
+  margin: 0 0 var(--space-sm);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-text-heading);
+}
+
+.pomodoro-timer__progress {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  margin-bottom: var(--space-lg);
+  padding-top: var(--space-lg);
+  border-top: 1px solid var(--color-border);
+}
+
+.pomodoro-timer__stats {
+  display: flex;
+  gap: 0;
+  width: 100%;
+}
+
+.pomodoro-timer__stat {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.125rem;
+  min-width: 0;
+  padding: 0 var(--space-sm);
+  text-align: center;
+}
+
+.pomodoro-timer__stat + .pomodoro-timer__stat {
+  border-left: 1px solid var(--color-border-subtle);
+}
+
+.pomodoro-timer__stat-value {
+  font-family: var(--font-mono);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-semibold);
+  font-variant-numeric: tabular-nums;
+  line-height: var(--line-height-tight);
+  color: var(--color-text-primary);
+}
+
+.pomodoro-timer__stat-label {
+  max-width: 9rem;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-normal);
+  letter-spacing: 0.02em;
+  line-height: var(--line-height-body);
+  color: var(--color-text-secondary);
+}
+
+#app[data-mode="work"] .time-display {
+  color: var(--color-work);
+}
+
+#app[data-mode="break"] .time-display,
+#app[data-mode="long-break"] .time-display {
+  color: var(--color-break);
 }
 
 .pomodoro-timer__button {
@@ -189,24 +308,24 @@ body {
 }
 
 .pomodoro-timer__button--primary {
-  background-color: var(--color-accent);
-  color: #ffffff;
+  background-color: var(--color-button-primary-bg);
+  color: var(--color-button-primary-text);
 }
 
 .pomodoro-timer__button--primary:hover {
-  background-color: var(--color-accent-hover);
+  background-color: var(--color-button-primary-bg-hover);
 }
 
 .pomodoro-timer__button--secondary {
-  background-color: transparent;
-  border-color: var(--color-border);
-  color: var(--color-text-muted);
+  background-color: var(--color-button-secondary-bg);
+  border-color: var(--color-button-secondary-border);
+  color: var(--color-button-secondary-text);
 }
 
 .pomodoro-timer__button--secondary:hover {
-  background-color: var(--color-mode-bg);
-  border-color: var(--color-accent);
-  color: var(--color-mode-text);
+  background-color: var(--color-button-secondary-bg-hover);
+  border-color: var(--color-button-secondary-border-hover);
+  color: var(--color-button-secondary-text);
 }
 
 .pomodoro-timer__button:focus-visible {
@@ -217,66 +336,70 @@ body {
 .settings-panel {
   display: flex;
   flex-direction: column;
-  gap: var(--space-md);
+  gap: var(--space-sm);
   width: 100%;
   padding-top: var(--space-lg);
   border-top: 1px solid var(--color-border);
 }
 
-.settings-panel__heading {
-  margin: 0;
-  font-size: var(--font-size-sm);
-  font-weight: var(--font-weight-semibold);
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--color-text-muted);
-}
-
 .settings-panel__fields {
   display: flex;
   flex-direction: column;
-  gap: var(--space-md);
+  gap: var(--space-sm);
 }
 
 .settings-panel__field {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-xs);
+  display: grid;
+  grid-template-columns: 1fr 6.5rem;
+  align-items: center;
+  gap: var(--space-md);
 }
 
 .settings-panel__label {
   font-size: var(--font-size-sm);
   font-weight: var(--font-weight-medium);
-  color: var(--color-mode-text);
+  color: var(--color-text-primary);
+  cursor: default;
 }
 
 .settings-panel__input {
   width: 100%;
-  padding: var(--space-sm) var(--space-md);
+  padding: var(--space-sm);
   font-family: var(--font-mono);
-  font-size: var(--font-size-md);
+  font-size: var(--font-size-sm);
   font-variant-numeric: tabular-nums;
-  color: var(--color-mode-text);
-  background-color: var(--color-mode-bg);
+  text-align: left;
+  color: var(--color-input-text);
+  background-color: var(--color-input-bg);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
+  box-shadow: var(--color-input-shadow);
+  cursor: text;
   transition:
     border-color 0.15s ease,
-    box-shadow 0.15s ease;
+    box-shadow 0.15s ease,
+    background-color 0.15s ease;
+}
+
+.settings-panel__input::placeholder {
+  color: var(--color-input-placeholder);
 }
 
 .settings-panel__input:hover {
-  border-color: var(--color-accent);
+  border-color: var(--color-input-border-hover);
+  background-color: var(--color-surface);
 }
 
 .settings-panel__input:focus {
   outline: none;
-  border-color: var(--color-accent);
-  box-shadow: 0 0 0 2px color-mix(in srgb, var(--color-accent) 25%, transparent);
+  border-color: var(--color-input-border-focus);
+  background-color: var(--color-surface);
+  box-shadow: var(--color-input-shadow), 0 0 0 2px var(--color-input-focus-ring);
 }
 
 .settings-panel__apply {
   width: 100%;
+  margin-top: var(--space-xs);
 }
 
 .time-display--complete {

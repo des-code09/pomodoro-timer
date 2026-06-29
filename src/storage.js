@@ -14,7 +14,8 @@ function isValidSettings(settings) {
     settings &&
     typeof settings === 'object' &&
     isValidDuration(settings.workDurationSeconds, WORK_MIN_SECONDS, WORK_MAX_SECONDS) &&
-    isValidDuration(settings.breakDurationSeconds, BREAK_MIN_SECONDS, BREAK_MAX_SECONDS)
+    isValidDuration(settings.breakDurationSeconds, BREAK_MIN_SECONDS, BREAK_MAX_SECONDS) &&
+    isValidDuration(settings.longBreakDurationSeconds, BREAK_MIN_SECONDS, BREAK_MAX_SECONDS)
   );
 }
 
@@ -29,7 +30,15 @@ function isValidSession(session) {
 }
 
 function maxDurationForMode(mode, settings) {
-  return mode === 'work' ? settings.workDurationSeconds : settings.breakDurationSeconds;
+  if (mode === 'work') {
+    return settings.workDurationSeconds;
+  }
+
+  if (mode === 'long-break') {
+    return settings.longBreakDurationSeconds;
+  }
+
+  return settings.breakDurationSeconds;
 }
 
 function isValidTimer(timer, settings) {
@@ -37,7 +46,11 @@ function isValidTimer(timer, settings) {
     return false;
   }
 
-  if (timer.currentMode !== 'work' && timer.currentMode !== 'break') {
+  if (
+    timer.currentMode !== 'work' &&
+    timer.currentMode !== 'break' &&
+    timer.currentMode !== 'long-break'
+  ) {
     return false;
   }
 
@@ -58,6 +71,10 @@ function isValidTimer(timer, settings) {
   return timer.endsAt === null || timer.endsAt === undefined;
 }
 
+function isValidCycleCount(count, maxPerCycle) {
+  return Number.isInteger(count) && count >= 0 && count <= maxPerCycle;
+}
+
 function defaultTimer(settings) {
   return {
     currentMode: 'work',
@@ -71,11 +88,12 @@ function defaultState(defaultSettings) {
   return {
     settings: { ...defaultSettings },
     sessions: [],
+    workSessionsSinceLongBreak: 0,
     timer: defaultTimer(defaultSettings),
   };
 }
 
-export function loadState(defaultSettings) {
+export function loadState(defaultSettings, pomodorosPerCycle) {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
 
@@ -84,8 +102,12 @@ export function loadState(defaultSettings) {
     }
 
     const parsed = JSON.parse(raw);
-    const settings = isValidSettings(parsed.settings)
-      ? parsed.settings
+    const mergedSettings = {
+      ...defaultSettings,
+      ...(parsed.settings && typeof parsed.settings === 'object' ? parsed.settings : {}),
+    };
+    const settings = isValidSettings(mergedSettings)
+      ? mergedSettings
       : defaultSettings;
     const sessions = Array.isArray(parsed.sessions)
       ? parsed.sessions.filter(isValidSession)
@@ -93,8 +115,14 @@ export function loadState(defaultSettings) {
     const timer = isValidTimer(parsed.timer, settings)
       ? parsed.timer
       : defaultTimer(settings);
+    const workSessionsSinceLongBreak = isValidCycleCount(
+      parsed.workSessionsSinceLongBreak,
+      pomodorosPerCycle,
+    )
+      ? parsed.workSessionsSinceLongBreak
+      : 0;
 
-    return { settings, sessions, timer };
+    return { settings, sessions, workSessionsSinceLongBreak, timer };
   } catch {
     return defaultState(defaultSettings);
   }
