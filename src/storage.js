@@ -1,5 +1,6 @@
 const STORAGE_KEY = 'pomodoro-timer';
-const STORAGE_VERSION = 2;
+const SESSION_TIMER_KEY = 'pomodoro-timer-session';
+const STORAGE_VERSION = 3;
 
 const WORK_MIN_SECONDS = 1;
 const WORK_MAX_SECONDS = 7200;
@@ -85,55 +86,89 @@ function defaultTimer(settings) {
   };
 }
 
-function defaultState(defaultSettings) {
+function defaultDurable(defaultSettings) {
   return {
     settings: { ...defaultSettings },
     sessions: [],
     workSessionsSinceLongBreak: 0,
-    timer: defaultTimer(defaultSettings),
   };
 }
 
-export function loadState(defaultSettings, pomodorosPerCycle) {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
+function parseDurablePayload(parsed, defaultSettings, pomodorosPerCycle) {
+  const mergedSettings = {
+    ...defaultSettings,
+    ...(parsed.settings && typeof parsed.settings === 'object' ? parsed.settings : {}),
+  };
+  const settings = isValidSettings(mergedSettings) ? mergedSettings : defaultSettings;
 
-    if (!raw) {
-      return defaultState(defaultSettings);
-    }
-
-    const parsed = JSON.parse(raw);
-
-    if (parsed.version !== STORAGE_VERSION) {
-      const fresh = defaultState(defaultSettings);
-      saveState(fresh);
-      return fresh;
-    }
-
-    const mergedSettings = {
-      ...defaultSettings,
-      ...(parsed.settings && typeof parsed.settings === 'object' ? parsed.settings : {}),
-    };
-    const settings = isValidSettings(mergedSettings)
-      ? mergedSettings
-      : defaultSettings;
-    const sessions = Array.isArray(parsed.sessions)
-      ? parsed.sessions.filter(isValidSession)
-      : [];
-    const timer = isValidTimer(parsed.timer, settings)
-      ? parsed.timer
-      : defaultTimer(settings);
-    const workSessionsSinceLongBreak = isValidCycleCount(
+  return {
+    settings,
+    sessions: Array.isArray(parsed.sessions) ? parsed.sessions.filter(isValidSession) : [],
+    workSessionsSinceLongBreak: isValidCycleCount(
       parsed.workSessionsSinceLongBreak,
       pomodorosPerCycle,
     )
       ? parsed.workSessionsSinceLongBreak
-      : 0;
+      : 0,
+  };
+}
 
-    return { settings, sessions, workSessionsSinceLongBreak, timer };
+function readSessionTimer(settings) {
+  try {
+    const raw = sessionStorage.getItem(SESSION_TIMER_KEY);
+
+    if (!raw) {
+      return null;
+    }
+
+    const parsed = JSON.parse(raw);
+    return isValidTimer(parsed, settings) ? parsed : null;
   } catch {
-    return defaultState(defaultSettings);
+    return null;
   }
+}
+
+function writeSessionTimer(timer) {
+  try {
+    sessionStorage.setItem(SESSION_TIMER_KEY, JSON.stringify(timer));
+  } catch {
+    // sessionStorage may be unavailable.
+  }
+}
+
+function readDurableState(defaultSettings, pomodorosPerCycle) {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+
+    if (!raw) {
+      return defaultDurable(defaultSettings);
+    }
+
+    const parsed = JSON.parse(raw);
+
+    if (parsed.version === STORAGE_VERSION || parsed.version === 2) {
+      const durable = parseDurablePayload(parsed, defaultSettings, pomodorosPerCycle);
+
+      if (parsed.version === 2) {
+        saveState({ ...durable, timer: defaultTimer(durable.settings) });
+      }
+
+      return durable;
+    }
+
+    const fresh = defaultDurable(defaultSettings);
+    saveState({ ...fresh, timer: defaultTimer(defaultSettings) });
+    return fresh;
+  } catch {
+    return defaultDurable(defaultSettings);
+  }
+}
+
+export function loadState(defaultSettings, pomodorosPerCycle) {
+  const durable = readDurableState(defaultSettings, pomodorosPerCycle);
+  const timer = readSessionTimer(durable.settings) ?? defaultTimer(durable.settings);
+
+  return { ...durable, timer };
 }
 
 export function saveState(state) {
@@ -141,10 +176,13 @@ export function saveState(state) {
     localStorage.setItem(
       STORAGE_KEY,
       JSON.stringify({
-        ...state,
         version: STORAGE_VERSION,
+        settings: state.settings,
+        sessions: state.sessions,
+        workSessionsSinceLongBreak: state.workSessionsSinceLongBreak,
       }),
     );
+    writeSessionTimer(state.timer);
   } catch {
     // Storage may be unavailable or full.
   }

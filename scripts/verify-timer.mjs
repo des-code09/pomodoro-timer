@@ -20,6 +20,11 @@ function createMemoryStorage() {
   };
 }
 
+function setupStorage() {
+  globalThis.localStorage = createMemoryStorage();
+  globalThis.sessionStorage = createMemoryStorage();
+}
+
 function getNextModeAfterCompletion(completedMode, workSessionsSinceLongBreak) {
   if (completedMode === 'work') {
     const nextCount = workSessionsSinceLongBreak + 1;
@@ -98,7 +103,7 @@ function catchUpTimerState(timer, settings, pomodorosPerCycle) {
 }
 
 test('loadState returns defaults when storage is empty', () => {
-  globalThis.localStorage = createMemoryStorage();
+  setupStorage();
   const state = loadState(defaultSettings, POMODOROS_PER_CYCLE);
   assert.equal(state.timer.currentMode, 'work');
   assert.equal(state.timer.timeRemaining, 25 * 60);
@@ -107,7 +112,7 @@ test('loadState returns defaults when storage is empty', () => {
 });
 
 test('loadState resets legacy storage without version', () => {
-  globalThis.localStorage = createMemoryStorage();
+  setupStorage();
   localStorage.setItem(
     'pomodoro-timer',
     JSON.stringify({
@@ -137,7 +142,7 @@ test('loadState resets legacy storage without version', () => {
 });
 
 test('saveState and loadState round-trip', () => {
-  globalThis.localStorage = createMemoryStorage();
+  setupStorage();
   const payload = {
     settings: defaultSettings,
     sessions: [{ completedAt: '2026-01-01T12:00:00.000Z', workDurationSeconds: 1500 }],
@@ -159,7 +164,7 @@ test('saveState and loadState round-trip', () => {
 });
 
 test('loadState rejects invalid timer and settings', () => {
-  globalThis.localStorage = createMemoryStorage();
+  setupStorage();
   saveState({
     settings: { ...defaultSettings, workDurationSeconds: 99999 },
     sessions: [{ completedAt: 'bad', workDurationSeconds: 1500 }],
@@ -283,4 +288,68 @@ test('boot markup loads css without vite and shows app immediately', () => {
   assert.doesNotMatch(mainJs, /import '\.\/style\.css'/);
   assert.doesNotMatch(mainJs, /document\.fonts\.ready/);
   assert.match(mainJs, /finally[\s\S]*finishBoot\(\)/);
+});
+
+test('new tab starts with fresh timer while durable state persists', () => {
+  setupStorage();
+  saveState({
+    settings: defaultSettings,
+    sessions: [{ completedAt: '2026-01-01T12:00:00.000Z', workDurationSeconds: 1500 }],
+    workSessionsSinceLongBreak: 2,
+    timer: {
+      currentMode: 'work',
+      timeRemaining: 24 * 60 + 55,
+      isRunning: false,
+      endsAt: null,
+    },
+  });
+
+  sessionStorage.removeItem('pomodoro-timer-session');
+
+  const loaded = loadState(defaultSettings, POMODOROS_PER_CYCLE);
+  assert.equal(loaded.sessions.length, 1);
+  assert.equal(loaded.workSessionsSinceLongBreak, 2);
+  assert.equal(loaded.timer.currentMode, 'work');
+  assert.equal(loaded.timer.timeRemaining, 25 * 60);
+  assert.equal(loaded.timer.isRunning, false);
+});
+
+test('same tab reload restores session timer', () => {
+  setupStorage();
+  saveState({
+    settings: defaultSettings,
+    sessions: [],
+    workSessionsSinceLongBreak: 0,
+    timer: {
+      currentMode: 'work',
+      timeRemaining: 24 * 60 + 55,
+      isRunning: false,
+      endsAt: null,
+    },
+  });
+
+  const loaded = loadState(defaultSettings, POMODOROS_PER_CYCLE);
+  assert.equal(loaded.timer.timeRemaining, 24 * 60 + 55);
+});
+
+test('loadState ignores timer stored in localStorage', () => {
+  setupStorage();
+  localStorage.setItem(
+    'pomodoro-timer',
+    JSON.stringify({
+      version: 3,
+      settings: defaultSettings,
+      sessions: [],
+      workSessionsSinceLongBreak: 0,
+      timer: {
+        currentMode: 'work',
+        timeRemaining: 24 * 60 + 55,
+        isRunning: false,
+        endsAt: null,
+      },
+    }),
+  );
+
+  const loaded = loadState(defaultSettings, POMODOROS_PER_CYCLE);
+  assert.equal(loaded.timer.timeRemaining, 25 * 60);
 });

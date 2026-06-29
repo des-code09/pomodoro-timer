@@ -54,8 +54,8 @@ let breakDuration = persisted.settings.breakDurationSeconds;
 let longBreakDuration = persisted.settings.longBreakDurationSeconds;
 let sessions = persisted.sessions;
 let workSessionsSinceLongBreak = persisted.workSessionsSinceLongBreak;
-let currentMode = persisted.timer.currentMode;
-let timeRemaining = persisted.timer.timeRemaining;
+let currentMode = 'work';
+let timeRemaining = workDuration;
 const UI_THEME_SWITCH_PROGRESS = 0.58;
 
 let isRunning = false;
@@ -154,11 +154,6 @@ function restoreTimerState() {
   if (restored.shouldResume && timeRemaining > 0) {
     startTimer(restored.endsAt);
     return;
-  }
-
-  if (restored.shouldResume && timeRemaining <= 0) {
-    currentMode = getNextModeAfterCompletion(currentMode, new Date().toISOString());
-    timeRemaining = getDurationForMode(currentMode);
   }
 
   persistState();
@@ -352,7 +347,6 @@ function updateDayProgress() {
   app.style.setProperty('--scene-day-blend', `${((1 - sceneProgress) * 100).toFixed(1)}%`);
   app.style.setProperty('--scene-night-blend', `${(sceneProgress * 100).toFixed(1)}%`);
   app.style.setProperty('--twilight-glow', twilightGlow.toFixed(4));
-  app.style.setProperty('--twilight-peak', twilightGlow.toFixed(4));
   app.style.setProperty('--card-surface-opacity', `${(cardOpacity * 100).toFixed(1)}%`);
   app.style.setProperty('--orb-top', `${10 + sceneProgress * 24}%`);
 
@@ -500,8 +494,6 @@ function reset() {
   pauseTimer();
   currentMode = 'work';
   timeRemaining = workDuration;
-  endsAt = null;
-  stopProgressLoop();
   timeDisplay.classList.remove('time-display--complete');
   app.classList.remove('mode-switch-flash');
   clearTimeout(notificationTimeoutId);

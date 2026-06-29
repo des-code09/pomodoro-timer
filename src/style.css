@@ -97,7 +97,6 @@
 
   --font-size-xs: 0.75rem;
   --font-size-sm: 0.875rem;
-  --font-size-mode: 1rem;
   --font-size-md: 1rem;
   --font-size-lg: 1.25rem;
   --font-size-xl: 1.5rem;
@@ -396,19 +395,19 @@ body {
 
 .pomodoro-scene__mountain--back {
   stroke: color-mix(in srgb, var(--day-periwinkle) var(--scene-day-blend), var(--night-sky-blue));
-  opacity: calc(0.58 + var(--day-progress) * 0.42 + var(--twilight-peak, 0) * 0.22);
+  opacity: calc(0.58 + var(--day-progress) * 0.42 + var(--twilight-glow, 0) * 0.22);
 }
 
 .pomodoro-scene__mountain--mid {
   stroke: color-mix(in srgb, var(--day-pink) var(--scene-day-blend), var(--night-pink));
-  opacity: calc(0.68 + var(--day-progress) * 0.32 + var(--twilight-peak, 0) * 0.28);
-  filter: drop-shadow(0 0 calc(6px + var(--twilight-peak, 0) * 10px) color-mix(in srgb, var(--night-pink) 55%, transparent));
+  opacity: calc(0.68 + var(--day-progress) * 0.32 + var(--twilight-glow, 0) * 0.28);
+  filter: drop-shadow(0 0 calc(6px + var(--twilight-glow, 0) * 10px) color-mix(in srgb, var(--night-pink) 55%, transparent));
 }
 
 .pomodoro-scene__mountain--front {
   stroke: color-mix(in srgb, var(--day-sky-blue) var(--scene-day-blend), var(--night-sky-blue));
-  opacity: calc(0.78 + var(--day-progress) * 0.22 + var(--twilight-peak, 0) * 0.18);
-  filter: drop-shadow(0 0 calc(8px + var(--twilight-peak, 0) * 12px) color-mix(in srgb, var(--night-sky-blue) var(--scene-night-blend), transparent));
+  opacity: calc(0.78 + var(--day-progress) * 0.22 + var(--twilight-glow, 0) * 0.18);
+  filter: drop-shadow(0 0 calc(8px + var(--twilight-glow, 0) * 12px) color-mix(in srgb, var(--night-sky-blue) var(--scene-night-blend), transparent));
 }
 
 .pomodoro-scene__grid {
@@ -418,7 +417,7 @@ body {
   z-index: 3;
   width: 200%;
   height: 42%;
-  opacity: calc(0.12 + var(--day-progress) * 0.78 + var(--twilight-peak, 0) * 0.22);
+  opacity: calc(0.12 + var(--day-progress) * 0.78 + var(--twilight-glow, 0) * 0.22);
   background:
     linear-gradient(
       transparent 0%,
@@ -465,8 +464,8 @@ body {
   opacity: clamp(0, calc(1 - var(--day-progress) * 0.95), 1);
   background: linear-gradient(180deg, var(--day-sun-top) 0%, var(--day-sun-bottom) 100%);
   box-shadow:
-    0 0 calc(28px + var(--twilight-peak, 0) * 24px) var(--sun-glow-inner),
-    0 0 calc(72px + var(--twilight-peak, 0) * 48px) var(--sun-glow-outer);
+    0 0 calc(28px + var(--twilight-glow, 0) * 24px) var(--sun-glow-inner),
+    0 0 calc(72px + var(--twilight-glow, 0) * 48px) var(--sun-glow-outer);
 }
 
 /* Moon — cool crescent, fades in as sun sets */
@@ -571,7 +570,7 @@ body {
 
 .pomodoro-timer__mode {
   margin: 0;
-  font-size: var(--font-size-mode);
+  font-size: var(--font-size-md);
   font-weight: var(--font-weight-semibold);
   letter-spacing: 0.1em;
   text-transform: uppercase;
