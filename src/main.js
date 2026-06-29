@@ -165,14 +165,6 @@ function restoreTimerState() {
   persistState();
 }
 
-function formatPomodoroCount(count) {
-  return String(count);
-}
-
-function formatCycleCount(count) {
-  return String(count);
-}
-
 function getModeLabel(mode) {
   if (mode === 'long-break') {
     return 'Long break';
@@ -219,8 +211,8 @@ function playNotificationSound() {
     });
 }
 
-function formatTime(seconds) {
-  return formatDuration(seconds);
+function setDurationInputValue(input, totalSeconds) {
+  input.value = formatDuration(totalSeconds);
 }
 
 function getDurationForMode(mode) {
@@ -258,10 +250,6 @@ function showSettingsFeedback(message, isError = false) {
   }, isError ? 4000 : 2500);
 }
 
-function setDurationInputValue(input, totalSeconds) {
-  input.value = formatTime(totalSeconds);
-}
-
 function showVisualNotification(completedMode) {
   const labels = {
     work: 'Work complete!',
@@ -276,10 +264,6 @@ function showVisualNotification(completedMode) {
     timeDisplay.classList.remove('time-display--complete');
     updateDOM();
   }, 1200);
-}
-
-function notifyTimerComplete(completedMode) {
-  showVisualNotification(completedMode);
 }
 
 function getModeElapsedSeconds() {
@@ -297,28 +281,6 @@ function getModeElapsedSeconds() {
   return Math.max(0, total - remainingSeconds);
 }
 
-function getWorkElapsedSeconds() {
-  if (currentMode !== 'work') {
-    return 0;
-  }
-
-  return getModeElapsedSeconds();
-}
-
-function getDayProgress() {
-  if (currentMode !== 'work') {
-    return 1;
-  }
-
-  const total = workDuration;
-
-  if (total <= 0) {
-    return 0;
-  }
-
-  return Math.min(1, getWorkElapsedSeconds() / total);
-}
-
 function getSceneProgress() {
   const total = getDurationForMode(currentMode);
 
@@ -333,12 +295,8 @@ function getSceneProgress() {
     return 1 - raw;
   }
 
-  if (currentMode === 'work') {
-    // Work: full day at start → night by end (linear so each second reads clearly)
-    return raw;
-  }
-
-  return 1;
+  // Work: full day at start → night by end (linear so each second reads clearly)
+  return raw;
 }
 
 function snapWorkDayUi() {
@@ -354,10 +312,6 @@ function snapWorkDayUi() {
       app.classList.remove('ui-snap');
     });
   });
-}
-
-function beginWorkSession() {
-  snapWorkDayUi();
 }
 
 function getUiTheme(sceneProgress) {
@@ -376,14 +330,10 @@ function getCardSurfaceOpacity(sceneProgress) {
 }
 
 function updateDayProgress() {
-  const workProgress = getDayProgress();
   const sceneProgress = getSceneProgress();
   const uiTheme =
     currentMode === 'work' ? getUiTheme(sceneProgress) : 'night';
-  const twilightGlow =
-    currentMode === 'work' || currentMode === 'break' || currentMode === 'long-break'
-      ? getTwilightGlow(sceneProgress)
-      : 0;
+  const twilightGlow = getTwilightGlow(sceneProgress);
   let cardOpacity =
     currentMode === 'work' ? getCardSurfaceOpacity(sceneProgress) : 0.88;
 
@@ -451,7 +401,7 @@ function stopProgressLoop() {
 }
 
 function updateDOM() {
-  timeDisplay.textContent = formatTime(timeRemaining);
+  timeDisplay.textContent = formatDuration(timeRemaining);
 
   if (!timeDisplay.classList.contains('time-display--complete')) {
     modeIndicator.textContent = getModeLabel(currentMode);
@@ -460,9 +410,10 @@ function updateDOM() {
   app.dataset.mode = currentMode;
   updateDayProgress();
 
-  startPauseBtn.textContent = isRunning ? 'Pause' : 'Start';
-  pomodoroCountEl.textContent = formatPomodoroCount(sessions.length);
-  cycleCountEl.textContent = formatCycleCount(workSessionsSinceLongBreak);
+  startPauseBtn.setAttribute('aria-label', isRunning ? 'Pause' : 'Start');
+  startPauseBtn.dataset.state = isRunning ? 'pause' : 'play';
+  pomodoroCountEl.textContent = String(sessions.length);
+  cycleCountEl.textContent = String(workSessionsSinceLongBreak);
 }
 
 function advanceAfterCompletion(completedMode) {
@@ -472,7 +423,7 @@ function advanceAfterCompletion(completedMode) {
   app.dataset.mode = currentMode;
 
   if (currentMode === 'work') {
-    beginWorkSession();
+    snapWorkDayUi();
   }
 
   if (isRunning) {
@@ -504,7 +455,7 @@ function tick() {
   if (timeRemaining <= 0) {
     const completedMode = currentMode;
 
-    notifyTimerComplete(completedMode);
+    showVisualNotification(completedMode);
     advanceAfterCompletion(completedMode);
 
     if (isRunning) {
@@ -555,7 +506,7 @@ function reset() {
   timeDisplay.classList.remove('time-display--complete');
   app.classList.remove('mode-switch-flash');
   clearTimeout(notificationTimeoutId);
-  beginWorkSession();
+  snapWorkDayUi();
   persistState();
   updateDOM();
 }
@@ -617,9 +568,7 @@ function applySettings() {
     timeRemaining = newDuration;
   } else {
     timeRemaining = Math.min(timeRemaining, newDuration);
-    if (currentMode === 'work') {
-      endsAt = Date.now() + timeRemaining * 1000;
-    }
+    endsAt = Date.now() + timeRemaining * 1000;
   }
 
   updateDOM();

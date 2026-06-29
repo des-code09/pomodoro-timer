@@ -1,4 +1,5 @@
 const STORAGE_KEY = 'pomodoro-timer';
+const STORAGE_VERSION = 2;
 
 const WORK_MIN_SECONDS = 1;
 const WORK_MAX_SECONDS = 7200;
@@ -102,6 +103,13 @@ export function loadState(defaultSettings, pomodorosPerCycle) {
     }
 
     const parsed = JSON.parse(raw);
+
+    if (parsed.version !== STORAGE_VERSION) {
+      const fresh = defaultState(defaultSettings);
+      saveState(fresh);
+      return fresh;
+    }
+
     const mergedSettings = {
       ...defaultSettings,
       ...(parsed.settings && typeof parsed.settings === 'object' ? parsed.settings : {}),
@@ -130,7 +138,13 @@ export function loadState(defaultSettings, pomodorosPerCycle) {
 
 export function saveState(state) {
   try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify({
+        ...state,
+        version: STORAGE_VERSION,
+      }),
+    );
   } catch {
     // Storage may be unavailable or full.
   }

@@ -105,6 +105,36 @@ test('loadState returns defaults when storage is empty', () => {
   assert.equal(state.workSessionsSinceLongBreak, 0);
 });
 
+test('loadState resets legacy storage without version', () => {
+  globalThis.localStorage = createMemoryStorage();
+  localStorage.setItem(
+    'pomodoro-timer',
+    JSON.stringify({
+      settings: {
+        workDurationSeconds: 600,
+        breakDurationSeconds: 120,
+        longBreakDurationSeconds: 900,
+      },
+      sessions: [{ completedAt: '2026-01-01T12:00:00.000Z', workDurationSeconds: 1500 }],
+      workSessionsSinceLongBreak: 76,
+      timer: {
+        currentMode: 'break',
+        timeRemaining: 120,
+        isRunning: false,
+        endsAt: null,
+      },
+    }),
+  );
+
+  const loaded = loadState(defaultSettings, POMODOROS_PER_CYCLE);
+  assert.deepEqual(loaded.settings, defaultSettings);
+  assert.equal(loaded.sessions.length, 0);
+  assert.equal(loaded.workSessionsSinceLongBreak, 0);
+  assert.equal(loaded.timer.currentMode, 'work');
+  assert.equal(loaded.timer.timeRemaining, 25 * 60);
+  assert.equal(loaded.timer.isRunning, false);
+});
+
 test('saveState and loadState round-trip', () => {
   globalThis.localStorage = createMemoryStorage();
   const payload = {

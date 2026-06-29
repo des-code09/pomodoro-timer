@@ -5,9 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pomodoro Timer</title>
     <style>
+      :root {
+        --night-plum-deep: #0f0820;
+      }
+
       body {
         margin: 0;
-        background: #0f0820;
+        background: var(--night-plum-deep);
       }
 
       html:not(.app-ready) #app {
@@ -66,107 +70,133 @@
             <div class="pomodoro-timer__controls">
                 <button
                     type="button"
-                    class="pomodoro-timer__button pomodoro-timer__button--primary"
+                    class="pomodoro-timer__button pomodoro-timer__button--primary pomodoro-timer__button--icon"
                     id="start-pause-btn"
+                    aria-label="Start"
+                    data-state="play"
                 >
-                    Start
+                    <svg class="pomodoro-timer__button-icon pomodoro-timer__button-icon--play" viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M8 5v14l11-7z" />
+                    </svg>
+                    <svg class="pomodoro-timer__button-icon pomodoro-timer__button-icon--pause" viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M6 5h4v14H6V5zm8 0h4v14h-4V5z" />
+                    </svg>
                 </button>
                 <button
                     type="button"
-                    class="pomodoro-timer__button pomodoro-timer__button--secondary"
+                    class="pomodoro-timer__button pomodoro-timer__button--secondary pomodoro-timer__button--icon"
                     id="reset-btn"
+                    aria-label="Reset"
                 >
-                    Reset
+                    <svg class="pomodoro-timer__button-icon" viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M12 5V1L7 6l5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z" />
+                    </svg>
                 </button>
             </div>
 
-            <section class="pomodoro-timer__progress" aria-labelledby="progress-heading">
-                <h2 class="pomodoro-timer__section-heading" id="progress-heading">Progress</h2>
+            <section class="pomodoro-timer__progress">
+                <details class="pomodoro-timer__collapsible" id="progress-section">
+                    <summary
+                        class="pomodoro-timer__section-heading pomodoro-timer__collapsible-summary"
+                        id="progress-heading"
+                    >
+                        Progress
+                    </summary>
 
-                <div class="pomodoro-timer__stats" aria-live="polite">
-                    <div class="pomodoro-timer__stat">
-                        <span class="pomodoro-timer__stat-value" id="pomodoro-count">0</span>
-                        <span class="pomodoro-timer__stat-label">Total session completed</span>
+                    <div class="pomodoro-timer__stats" aria-live="polite">
+                        <div class="pomodoro-timer__stat">
+                            <span class="pomodoro-timer__stat-label">Total session completed</span>
+                            <span class="pomodoro-timer__stat-value" id="pomodoro-count">0</span>
+                        </div>
+                        <div class="pomodoro-timer__stat">
+                            <span class="pomodoro-timer__stat-label">Sessions since long break</span>
+                            <span class="pomodoro-timer__stat-value" id="cycle-count">0</span>
+                        </div>
                     </div>
-                    <div class="pomodoro-timer__stat">
-                        <span class="pomodoro-timer__stat-value" id="cycle-count">0</span>
-                        <span class="pomodoro-timer__stat-label">Sessions since long break</span>
-                    </div>
-                </div>
+                </details>
             </section>
 
-            <section class="settings-panel" aria-labelledby="settings-heading">
-                <h2 class="pomodoro-timer__section-heading" id="settings-heading">Settings</h2>
+            <section class="settings-panel">
+                <details class="pomodoro-timer__collapsible" id="settings-section">
+                    <summary
+                        class="pomodoro-timer__section-heading pomodoro-timer__collapsible-summary"
+                        id="settings-heading"
+                    >
+                        Settings
+                    </summary>
 
-                <div class="settings-panel__fields">
-                    <div class="settings-panel__field">
-                        <label class="settings-panel__label" for="work-duration">Work</label>
-                        <input
-                            class="settings-panel__input"
-                            type="text"
-                            id="work-duration"
-                            name="work-duration"
-                            inputmode="numeric"
-                            pattern="[0-9]+(:[0-9]{1,2}){0,2}"
-                            placeholder="MM:SS"
-                            aria-label="Work duration in minutes and seconds"
-                            title="MM:SS, HH:MM:SS, 90s, 25m30s, or 25 (minutes)"
-                            data-min-seconds="1"
-                            data-max-seconds="7200"
-                            value="25:00"
-                        />
+                    <div class="settings-panel__content">
+                        <div class="settings-panel__fields">
+                            <div class="settings-panel__field">
+                                <label class="settings-panel__label" for="work-duration">Work</label>
+                                <input
+                                    class="settings-panel__input"
+                                    type="text"
+                                    id="work-duration"
+                                    name="work-duration"
+                                    inputmode="numeric"
+                                    pattern="[0-9]+(:[0-9]{1,2}){0,2}"
+                                    placeholder="MM:SS"
+                                    aria-label="Work duration in minutes and seconds"
+                                    title="MM:SS, HH:MM:SS, 90s, 25m30s, or 25 (minutes)"
+                                    data-min-seconds="1"
+                                    data-max-seconds="7200"
+                                    value="25:00"
+                                />
+                            </div>
+
+                            <div class="settings-panel__field">
+                                <label class="settings-panel__label" for="break-duration">Break</label>
+                                <input
+                                    class="settings-panel__input"
+                                    type="text"
+                                    id="break-duration"
+                                    name="break-duration"
+                                    inputmode="numeric"
+                                    pattern="[0-9]+(:[0-9]{1,2}){0,2}"
+                                    placeholder="MM:SS"
+                                    aria-label="Break duration in minutes and seconds"
+                                    title="MM:SS, HH:MM:SS, 90s, 25m30s, or 25 (minutes)"
+                                    data-min-seconds="1"
+                                    data-max-seconds="3600"
+                                    value="05:00"
+                                />
+                            </div>
+
+                            <div class="settings-panel__field">
+                                <label class="settings-panel__label" for="long-break-duration">Long break</label>
+                                <input
+                                    class="settings-panel__input"
+                                    type="text"
+                                    id="long-break-duration"
+                                    name="long-break-duration"
+                                    inputmode="numeric"
+                                    pattern="[0-9]+(:[0-9]{1,2}){0,2}"
+                                    placeholder="MM:SS"
+                                    aria-label="Long break duration in minutes and seconds"
+                                    title="MM:SS, HH:MM:SS, 90s, 25m30s, or 25 (minutes)"
+                                    data-min-seconds="1"
+                                    data-max-seconds="3600"
+                                    value="15:00"
+                                />
+                            </div>
+                        </div>
+
+                        <button
+                            type="button"
+                            class="pomodoro-timer__button pomodoro-timer__button--secondary settings-panel__apply"
+                            id="apply-settings-btn"
+                        >
+                            Apply
+                        </button>
+
+                        <p
+                            class="settings-panel__feedback"
+                            id="settings-feedback"
+                            aria-live="polite"
+                        ></p>
                     </div>
-
-                    <div class="settings-panel__field">
-                        <label class="settings-panel__label" for="break-duration">Break</label>
-                        <input
-                            class="settings-panel__input"
-                            type="text"
-                            id="break-duration"
-                            name="break-duration"
-                            inputmode="numeric"
-                            pattern="[0-9]+(:[0-9]{1,2}){0,2}"
-                            placeholder="MM:SS"
-                            aria-label="Break duration in minutes and seconds"
-                            title="MM:SS, HH:MM:SS, 90s, 25m30s, or 25 (minutes)"
-                            data-min-seconds="1"
-                            data-max-seconds="3600"
-                            value="05:00"
-                        />
-                    </div>
-
-                    <div class="settings-panel__field">
-                        <label class="settings-panel__label" for="long-break-duration">Long break</label>
-                        <input
-                            class="settings-panel__input"
-                            type="text"
-                            id="long-break-duration"
-                            name="long-break-duration"
-                            inputmode="numeric"
-                            pattern="[0-9]+(:[0-9]{1,2}){0,2}"
-                            placeholder="MM:SS"
-                            aria-label="Long break duration in minutes and seconds"
-                            title="MM:SS, HH:MM:SS, 90s, 25m30s, or 25 (minutes)"
-                            data-min-seconds="1"
-                            data-max-seconds="3600"
-                            value="15:00"
-                        />
-                    </div>
-                </div>
-
-                <button
-                    type="button"
-                    class="pomodoro-timer__button pomodoro-timer__button--secondary settings-panel__apply"
-                    id="apply-settings-btn"
-                >
-                    Apply
-                </button>
-
-                <p
-                    class="settings-panel__feedback"
-                    id="settings-feedback"
-                    aria-live="polite"
-                ></p>
+                </details>
             </section>
         </main>
     </div>

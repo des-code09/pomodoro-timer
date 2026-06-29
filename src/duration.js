@@ -85,13 +85,6 @@ export function parseDurationStringDetailed(raw, minTotal, maxTotal) {
   return { ok: true, seconds: totalSeconds };
 }
 
-export function parseDurationInput(input) {
-  const minTotal = Number.parseInt(input.dataset.minSeconds, 10);
-  const maxTotal = Number.parseInt(input.dataset.maxSeconds, 10);
-
-  return parseDurationString(input.value, minTotal, maxTotal);
-}
-
 export function parseDurationInputDetailed(input) {
   const minTotal = Number.parseInt(input.dataset.minSeconds, 10);
   const maxTotal = Number.parseInt(input.dataset.maxSeconds, 10);
