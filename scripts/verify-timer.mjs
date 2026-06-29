@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
 import { test } from 'node:test';
 import { formatDuration, parseDurationString } from '../src/duration.js';
 import { loadState, saveState } from '../src/storage.js';
@@ -269,4 +270,17 @@ test('parseDurationString rejects zero and out-of-range values', () => {
 test('formatDuration shows hours when needed', () => {
   assert.equal(formatDuration(90), '01:30');
   assert.equal(formatDuration(5400), '1:30:00');
+});
+
+test('boot markup loads css without vite and shows app immediately', () => {
+  const html = readFileSync(new URL('../index.html', import.meta.url), 'utf8');
+  const mainJs = readFileSync(new URL('../src/main.js', import.meta.url), 'utf8');
+
+  assert.match(html, /link rel="stylesheet" href="\.\/src\/style\.css"/);
+  assert.match(html, /type="module" src="\.\/src\/main\.js"/);
+  assert.match(html, /id="time-display"[\s\S]*25:00/);
+  assert.doesNotMatch(html, /visibility:\s*hidden/);
+  assert.doesNotMatch(mainJs, /import '\.\/style\.css'/);
+  assert.doesNotMatch(mainJs, /document\.fonts\.ready/);
+  assert.match(mainJs, /finally[\s\S]*finishBoot\(\)/);
 });

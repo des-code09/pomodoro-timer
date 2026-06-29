@@ -179,10 +179,6 @@ body {
   background: transparent;
 }
 
-html.app-ready #app {
-  visibility: visible;
-}
-
 #app.mode-switch-flash {
   animation: background-flash 0.8s ease-out;
 }

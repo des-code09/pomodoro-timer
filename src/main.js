@@ -1,4 +1,3 @@
-import './style.css';
 import {
   DEFAULT_WORK_MINUTES,
   DEFAULT_BREAK_MINUTES,
@@ -619,15 +618,8 @@ function handleKeyboardShortcut(event) {
   }
 }
 
-setDurationInputValue(workDurationInput, workDuration);
-setDurationInputValue(breakDurationInput, breakDuration);
-setDurationInputValue(longBreakDurationInput, longBreakDuration);
-
-function initializeApp() {
-  app.classList.add('ui-snap');
-  restoreTimerState();
-  updateDOM();
-  document.documentElement.classList.add('app-ready');
+function finishBoot() {
+  document.documentElement.classList.add('booted');
 
   requestAnimationFrame(() => {
     requestAnimationFrame(() => {
@@ -636,13 +628,36 @@ function initializeApp() {
   });
 }
 
-startPauseBtn.addEventListener('click', toggleStartPause);
-resetBtn.addEventListener('click', reset);
-applySettingsBtn.addEventListener('click', applySettings);
-[workDurationInput, breakDurationInput, longBreakDurationInput].forEach((input) => {
-  input.addEventListener('keydown', handleSettingsKeydown);
-});
-window.addEventListener('keydown', handleKeyboardShortcut);
-window.addEventListener('pagehide', persistState);
+function initializeApp() {
+  app.classList.add('ui-snap');
 
-initializeApp();
+  try {
+    restoreTimerState();
+    setDurationInputValue(workDurationInput, workDuration);
+    setDurationInputValue(breakDurationInput, breakDuration);
+    setDurationInputValue(longBreakDurationInput, longBreakDuration);
+    updateDOM();
+  } finally {
+    finishBoot();
+  }
+}
+
+function bootApp() {
+  startPauseBtn.addEventListener('click', toggleStartPause);
+  resetBtn.addEventListener('click', reset);
+  applySettingsBtn.addEventListener('click', applySettings);
+  [workDurationInput, breakDurationInput, longBreakDurationInput].forEach((input) => {
+    input.addEventListener('keydown', handleSettingsKeydown);
+  });
+  window.addEventListener('keydown', handleKeyboardShortcut);
+  window.addEventListener('pagehide', persistState);
+
+  initializeApp();
+}
+
+try {
+  bootApp();
+} catch (error) {
+  console.error('Pomodoro timer failed to initialize:', error);
+  finishBoot();
+}
