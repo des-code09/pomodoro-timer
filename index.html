@@ -6,7 +6,35 @@
     <title>Pomodoro Timer</title>
 </head>
 <body>
-    <div id="app" data-mode="work">
+    <div id="app" data-mode="work" data-ui-theme="day" style="--day-progress: 0; --scene-day-blend: 100%; --scene-night-blend: 0%; --ui-day-blend: 100%; --ui-night-blend: 0%; --twilight-glow: 0; --card-surface-opacity: 84%; --orb-top: 10%">
+        <div class="pomodoro-scene" aria-hidden="true">
+            <div class="pomodoro-scene__sky"></div>
+
+            <div class="pomodoro-scene__stars">
+                <span></span><span></span><span></span><span></span><span></span>
+                <span></span><span></span><span></span><span></span><span></span>
+                <span></span><span></span><span></span><span></span><span></span>
+                <span></span><span></span><span></span><span></span><span></span>
+            </div>
+
+            <div class="pomodoro-scene__celestial">
+                <div class="pomodoro-scene__orb">
+                    <div class="pomodoro-scene__orb-sun"></div>
+                    <div class="pomodoro-scene__orb-moon">
+                        <div class="pomodoro-scene__orb-moon-disc"></div>
+                    </div>
+                </div>
+            </div>
+
+            <svg class="pomodoro-scene__mountains" viewBox="0 0 400 120" preserveAspectRatio="none">
+                <path class="pomodoro-scene__mountain pomodoro-scene__mountain--back" d="M0 120 L0 70 L60 45 L120 68 L180 38 L240 58 L300 32 L360 55 L400 40 L400 120 Z" />
+                <path class="pomodoro-scene__mountain pomodoro-scene__mountain--mid" d="M0 120 L0 82 L50 58 L110 78 L170 52 L230 72 L290 48 L350 68 L400 55 L400 120 Z" />
+                <path class="pomodoro-scene__mountain pomodoro-scene__mountain--front" d="M0 120 L0 90 L70 68 L140 88 L210 62 L280 82 L350 65 L400 78 L400 120 Z" />
+            </svg>
+
+            <div class="pomodoro-scene__grid"></div>
+        </div>
+
         <main class="pomodoro-timer">
             <div class="pomodoro-timer__timer">
                 <p class="pomodoro-timer__mode" id="mode-indicator">Work</p>
@@ -63,9 +91,10 @@
                             id="work-duration"
                             name="work-duration"
                             inputmode="numeric"
-                            pattern="[0-9]+:[0-9]{1,2}"
+                            pattern="[0-9]+(:[0-9]{1,2}){0,2}"
                             placeholder="MM:SS"
                             aria-label="Work duration in minutes and seconds"
+                            title="MM:SS, HH:MM:SS, 90s, 25m30s, or 25 (minutes)"
                             data-min-seconds="1"
                             data-max-seconds="7200"
                             value="25:00"
@@ -80,9 +109,10 @@
                             id="break-duration"
                             name="break-duration"
                             inputmode="numeric"
-                            pattern="[0-9]+:[0-9]{1,2}"
+                            pattern="[0-9]+(:[0-9]{1,2}){0,2}"
                             placeholder="MM:SS"
                             aria-label="Break duration in minutes and seconds"
+                            title="MM:SS, HH:MM:SS, 90s, 25m30s, or 25 (minutes)"
                             data-min-seconds="1"
                             data-max-seconds="3600"
                             value="05:00"
@@ -97,9 +127,10 @@
                             id="long-break-duration"
                             name="long-break-duration"
                             inputmode="numeric"
-                            pattern="[0-9]+:[0-9]{1,2}"
+                            pattern="[0-9]+(:[0-9]{1,2}){0,2}"
                             placeholder="MM:SS"
                             aria-label="Long break duration in minutes and seconds"
+                            title="MM:SS, HH:MM:SS, 90s, 25m30s, or 25 (minutes)"
                             data-min-seconds="1"
                             data-max-seconds="3600"
                             value="15:00"
@@ -114,6 +145,12 @@
                 >
                     Apply
                 </button>
+
+                <p
+                    class="settings-panel__feedback"
+                    id="settings-feedback"
+                    aria-live="polite"
+                ></p>
             </section>
         </main>
     </div>

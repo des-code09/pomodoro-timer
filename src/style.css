@@ -1,79 +1,45 @@
+@property --day-progress {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 0;
+}
+
 :root {
   /*
-   * Palette — warm pastel (derived from reference swatches)
-   * Plum/violet tones: text, borders, buttons
-   * Warm creams/blush: page and surface backgrounds only
+   * Synthwave palette — light (day) + dark (night) from reference image
+   *
+   * Dark tubes: deep plum · hot pink · orange · periwinkle · sky blue
+   * Light inverse: soft periwinkle sky · peach horizon · warm sun · pink accents
    */
-  --color-plum-900: #3f3650;
-  --color-plum-800: #544764;
-  --color-plum-700: #6a5c7c;
-  --color-plum-600: #7d6e91;
-  --color-plum-500: #9485a5;
-  --color-plum-400: #a895b3;
-  --color-plum-300: #c4b6cf;
-  --color-plum-200: #d9cee3;
-  --color-plum-100: #ebe3f0;
 
-  --color-warm-100: #fdf8f4;
-  --color-warm-200: #f7ede6;
-  --color-warm-300: #f0e0d8;
-  --color-warm-400: #e8d0de;
-  --color-warm-500: #dcc8df;
+  /* Dark mode — night (reference image) */
+  --night-plum-deep: #0f0820;
+  --night-plum-mid: #1a0f2e;
+  --night-plum-horizon: #2d1045;
+  --night-pink: #ff2d8a;
+  --night-orange: #ff6b2c;
+  --night-periwinkle: #7b8fd4;
+  --night-sky-blue: #5ec4ff;
+  --night-text: #e8f0ff;
+  --night-text-muted: #b8c8e0;
+  --night-surface: rgb(14 10 26 / 0.92);
+  --night-border: rgb(94 196 255 / 0.42);
 
-  /* Semantic — page & card */
-  --color-bg: var(--color-warm-200);
-  --color-surface: var(--color-warm-100);
-  --color-border: var(--color-plum-300);
-  --color-border-subtle: var(--color-plum-200);
-
-  /* Semantic — typography */
-  --color-text-primary: var(--color-plum-900);
-  --color-text-secondary: var(--color-plum-500);
-  --color-text-heading: var(--color-plum-600);
-  --color-text: var(--color-text-primary);
-  --color-text-muted: var(--color-text-secondary);
-
-  /* Semantic — text inputs */
-  --color-input-bg: var(--color-surface);
-  --color-input-border: var(--color-border-subtle);
-  --color-input-border-hover: var(--color-border);
-  --color-input-border-focus: var(--color-plum-600);
-  --color-input-text: var(--color-text-primary);
-  --color-input-placeholder: color-mix(in srgb, var(--color-text-secondary) 80%, transparent);
-  --color-input-shadow: inset 0 1px 2px color-mix(in srgb, var(--color-plum-900) 6%, transparent);
-  --color-input-focus-ring: color-mix(in srgb, var(--color-plum-600) 25%, transparent);
-
-  /* Semantic — primary buttons */
-  --color-button-primary-bg: var(--color-plum-700);
-  --color-button-primary-bg-hover: var(--color-plum-800);
-  --color-button-primary-text: #ffffff;
-
-  /* Semantic — secondary buttons */
-  --color-button-secondary-bg: var(--color-plum-100);
-  --color-button-secondary-bg-hover: var(--color-plum-300);
-  --color-button-secondary-text: var(--color-text-primary);
-  --color-button-secondary-border: transparent;
-  --color-button-secondary-border-hover: var(--color-plum-500);
-
-  /* Work mode — deeper plum (periwinkle swatch) */
-  --color-work-accent: var(--color-plum-700);
-  --color-work-accent-hover: var(--color-plum-800);
-  --color-work-bg: var(--color-warm-400);
-  --color-work-surface: var(--color-surface);
-  --color-work-text: var(--color-text-primary);
-  --color-work: var(--color-work-text);
-  --color-work-button-secondary-bg-hover: var(--color-plum-300);
-  --color-work-button-secondary-border-hover: var(--color-work-accent);
-
-  /* Break mode — softer lavender (mauve swatch) */
-  --color-break-accent: var(--color-plum-500);
-  --color-break-accent-hover: var(--color-plum-600);
-  --color-break-bg: var(--color-warm-500);
-  --color-break-surface: var(--color-surface);
-  --color-break-text: var(--color-text-primary);
-  --color-break: var(--color-break-text);
-  --color-break-button-secondary-bg-hover: var(--color-plum-200);
-  --color-break-button-secondary-border-hover: var(--color-break-accent);
+  /* Light mode — day (theme inverse) */
+  --day-sky-top: #c4d0ef;
+  --day-sky-mid: #e4d4ef;
+  --day-sky-horizon: #ffd9b8;
+  --day-sun-top: #ffe082;
+  --day-sun-bottom: #ff9f43;
+  --moon-surface-top: #f6f9ff;
+  --moon-surface-bottom: #b8c8e4;
+  --day-pink: #e8478a;
+  --day-periwinkle: #8b9fd4;
+  --day-sky-blue: #6eb8f0;
+  --day-text: #2a1f3d;
+  --day-text-muted: #6b5f80;
+  --day-surface: rgb(255 252 248 / 0.88);
+  --day-border: rgb(139 159 212 / 0.45);
 
   /* Spacing */
   --space-xs: 0.25rem;
@@ -100,7 +66,6 @@
   --line-height-body: 1.5;
   --line-height-tight: 1.2;
 
-  /* Border radius — lg matches palette strip (~16px) */
   --radius-sm: 0.375rem;
   --radius-md: 0.5rem;
   --radius-lg: 1rem;
@@ -122,15 +87,55 @@ body {
   font-weight: var(--font-weight-normal);
   line-height: var(--line-height-body);
   color: var(--color-text-primary);
-  background-color: var(--color-bg);
+  background-color: var(--night-plum-deep);
 }
 
 #app {
+  --day-progress: 0;
+  --scene-day-blend: 100%;
+  --scene-night-blend: 0%;
+  --ui-day-blend: 100%;
+  --ui-night-blend: 0%;
+
+  /* UI tokens — darken faster than the sky via --ui-day-blend */
+  --color-text-primary: color-mix(in srgb, var(--day-text) var(--ui-day-blend), var(--night-text));
+  --color-text-secondary: color-mix(in srgb, var(--day-text-muted) var(--ui-day-blend), var(--night-text-muted));
+  --color-text-heading: color-mix(in srgb, var(--day-pink) var(--ui-day-blend), var(--night-sky-blue));
+  --color-text: var(--color-text-primary);
+  --color-text-muted: var(--color-text-secondary);
+  --color-surface: color-mix(in srgb, rgb(255 252 248 / 0.94) var(--ui-day-blend), rgb(8 6 18 / 0.97));
+  --color-border: color-mix(in srgb, var(--day-border) var(--ui-day-blend), var(--night-border));
+  --color-border-subtle: color-mix(in srgb, var(--color-border) 55%, transparent);
+
+  --color-input-bg: color-mix(in srgb, rgb(255 255 255 / 0.82) var(--ui-day-blend), rgb(6 4 14 / 0.95));
+  --color-input-border: color-mix(in srgb, rgb(139 159 212 / 0.55) var(--ui-day-blend), rgb(94 196 255 / 0.55));
+  --color-input-border-hover: var(--color-border);
+  --color-input-text: color-mix(in srgb, var(--day-text) var(--ui-day-blend), #f4f8ff);
+  --color-input-placeholder: color-mix(in srgb, var(--color-text-secondary) 70%, transparent);
+  --color-input-shadow: inset 0 1px 3px color-mix(in srgb, #000 28%, transparent);
+  --color-input-focus-ring: color-mix(in srgb, var(--color-accent) 35%, transparent);
+
+  --color-button-primary-text: color-mix(in srgb, #ffffff var(--ui-day-blend), var(--night-plum-deep));
+  --color-button-secondary-bg: color-mix(
+    in srgb,
+    rgb(255 255 255 / 0.72) var(--ui-day-blend),
+    rgb(16 14 32 / 0.88)
+  );
+  --color-button-secondary-text: color-mix(in srgb, var(--day-text) var(--ui-day-blend), #eef4ff);
+  --color-button-secondary-border: color-mix(
+    in srgb,
+    rgb(120 100 160 / 0.55) var(--ui-day-blend),
+    rgb(94 196 255 / 0.88)
+  );
+
+  position: relative;
+  z-index: 1;
   display: flex;
   align-items: center;
   justify-content: center;
   min-height: 100vh;
   padding: var(--space-md);
+  background: transparent;
 }
 
 #app.mode-switch-flash {
@@ -140,46 +145,358 @@ body {
 @keyframes background-flash {
   0%,
   100% {
-    background-color: transparent;
+    filter: brightness(1);
   }
 
   50% {
-    background-color: color-mix(in srgb, var(--color-accent) 35%, var(--color-bg));
+    filter: brightness(1.15);
   }
 }
 
-#app[data-mode="work"] {
-  --color-accent: var(--color-work-accent);
-  --color-accent-hover: var(--color-work-accent-hover);
-  --color-mode-surface: var(--color-work-surface);
-  --color-mode-text: var(--color-work-text);
-  --color-input-border-focus: var(--color-work-accent);
-  --color-input-focus-ring: color-mix(in srgb, var(--color-work-accent) 25%, transparent);
-  --color-button-primary-bg: var(--color-work-accent);
-  --color-button-primary-bg-hover: var(--color-work-accent-hover);
-  --color-button-secondary-bg: var(--color-work-bg);
-  --color-button-secondary-bg-hover: var(--color-work-button-secondary-bg-hover);
-  --color-button-secondary-text: var(--color-work-text);
-  --color-button-secondary-border-hover: var(--color-work-button-secondary-border-hover);
+#app[data-mode="work"][data-ui-theme="day"] {
+  --color-accent: var(--day-pink);
+  --color-text-primary: var(--day-text);
+  --color-text-secondary: var(--day-text-muted);
+  --color-surface: rgb(255 252 248 / 0.96);
+  --color-border: var(--day-border);
+  --color-input-bg: rgb(255 255 255 / 0.92);
+  --color-input-border: rgb(139 159 212 / 0.55);
+  --color-input-text: var(--day-text);
+  --color-button-primary-text: #ffffff;
+  --color-button-secondary-bg: rgb(255 255 255 / 0.88);
+  --color-button-secondary-text: var(--day-text);
+  --color-button-secondary-border: rgb(120 100 160 / 0.55);
+  --color-mode-glow:
+    0 0 12px color-mix(in srgb, var(--day-pink) 65%, transparent),
+    0 0 28px color-mix(in srgb, var(--day-pink) 35%, transparent);
+}
+
+#app[data-mode="work"][data-ui-theme="night"] {
+  --color-accent: var(--night-sky-blue);
+  --color-text-primary: #eef4ff;
+  --color-text-secondary: #c8d8f0;
+  --color-surface: rgb(8 6 18 / 0.96);
+  --color-border: var(--night-border);
+  --color-input-bg: rgb(6 4 14 / 0.95);
+  --color-input-border: rgb(94 196 255 / 0.55);
+  --color-input-text: #f4f8ff;
+  --color-button-primary-text: var(--night-plum-deep);
+  --color-button-secondary-bg: rgb(16 14 32 / 0.88);
+  --color-button-secondary-text: #eef4ff;
+  --color-button-secondary-border: rgb(94 196 255 / 0.88);
+  --color-mode-glow:
+    0 0 14px color-mix(in srgb, var(--night-sky-blue) 70%, transparent),
+    0 0 32px color-mix(in srgb, var(--night-sky-blue) 40%, transparent);
+}
+
+#app[data-mode="work"][data-ui-theme="night"] .pomodoro-timer__stat-label,
+#app[data-mode="work"][data-ui-theme="night"] .settings-panel__label {
+  color: #dce8ff;
+  text-shadow: 0 0 8px rgb(94 196 255 / 0.35);
+}
+
+#app[data-mode="break"] {
+  --color-accent: var(--night-sky-blue);
+  --color-mode-glow:
+    0 0 10px color-mix(in srgb, var(--night-sky-blue) 55%, transparent),
+    0 0 24px color-mix(in srgb, var(--night-sky-blue) 35%, transparent);
+}
+
+#app[data-mode="long-break"] {
+  --color-accent: var(--night-periwinkle);
+  --color-mode-glow:
+    0 0 10px color-mix(in srgb, var(--night-periwinkle) 55%, transparent),
+    0 0 24px color-mix(in srgb, var(--night-periwinkle) 35%, transparent);
+}
+
+#app[data-mode="work"],
+#app[data-mode="break"],
+#app[data-mode="long-break"] {
+  --color-accent-hover: color-mix(in srgb, var(--color-accent) 72%, #ffffff);
+  --color-accent-glow-hover:
+    0 0 14px color-mix(in srgb, var(--color-accent) 65%, transparent),
+    0 0 32px color-mix(in srgb, var(--color-accent) 32%, transparent);
 }
 
 #app[data-mode="break"],
 #app[data-mode="long-break"] {
-  --color-accent: var(--color-break-accent);
-  --color-accent-hover: var(--color-break-accent-hover);
-  --color-mode-surface: var(--color-break-surface);
-  --color-mode-text: var(--color-break-text);
-  --color-input-border-focus: var(--color-break-accent);
-  --color-input-focus-ring: color-mix(in srgb, var(--color-break-accent) 25%, transparent);
-  --color-button-primary-bg: var(--color-break-accent);
-  --color-button-primary-bg-hover: var(--color-break-accent-hover);
-  --color-button-secondary-bg: var(--color-break-bg);
-  --color-button-secondary-bg-hover: var(--color-break-button-secondary-bg-hover);
-  --color-button-secondary-text: var(--color-break-text);
-  --color-button-secondary-border-hover: var(--color-break-button-secondary-border-hover);
+  --ui-day-blend: 0%;
+  --ui-night-blend: 100%;
 }
 
+#app[data-ui-theme="day"] .pomodoro-timer__stat-label,
+#app[data-ui-theme="day"] .settings-panel__label {
+  text-shadow: none;
+}
+
+#app[data-mode="work"][data-ui-theme="day"][data-phase="twilight"] .pomodoro-timer__stat-label,
+#app[data-mode="work"][data-ui-theme="day"][data-phase="twilight"] .settings-panel__label {
+  color: var(--day-text);
+  text-shadow: 0 0 10px rgb(255 255 255 / 0.95);
+}
+
+#app.ui-snap,
+#app.ui-snap .pomodoro-timer,
+#app.ui-snap .pomodoro-timer__mode,
+#app.ui-snap .pomodoro-timer__display,
+#app.ui-snap .pomodoro-timer__section-heading,
+#app.ui-snap .pomodoro-timer__stat-label,
+#app.ui-snap .pomodoro-timer__stat-value,
+#app.ui-snap .pomodoro-timer__progress,
+#app.ui-snap .settings-panel,
+#app.ui-snap .settings-panel__label,
+#app.ui-snap .settings-panel__input,
+#app.ui-snap .pomodoro-timer__button {
+  transition: none !important;
+}
+
+/* ── Scenic background ── */
+
+.pomodoro-scene {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.pomodoro-scene * {
+  pointer-events: none;
+}
+
+.pomodoro-scene__sky {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--day-sky-top) var(--scene-day-blend), var(--night-plum-deep)) 0%,
+      color-mix(in srgb, var(--day-sky-mid) var(--scene-day-blend), var(--night-plum-mid)) 42%,
+      color-mix(in srgb, var(--day-sky-horizon) var(--scene-day-blend), var(--night-plum-horizon)) 100%
+    );
+}
+
+/* Saturated sunset band — peaks at twilight so mid-transition stays vivid */
+.pomodoro-scene__sky::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(
+      ellipse 95% 50% at 50% 70%,
+      rgb(255 130 60 / 0.62) 0%,
+      rgb(255 45 138 / 0.42) 42%,
+      transparent 74%
+    ),
+    linear-gradient(
+      180deg,
+      transparent 32%,
+      rgb(255 100 130 / 0.34) 62%,
+      rgb(150 90 230 / 0.28) 100%
+    );
+  opacity: var(--twilight-glow, 0);
+}
+
+.pomodoro-scene__stars {
+  position: absolute;
+  inset: 0;
+  opacity: min(1, calc(var(--day-progress) * 1.35));
+}
+
+.pomodoro-scene__stars span {
+  position: absolute;
+  width: 2px;
+  height: 2px;
+  border-radius: 50%;
+  background: #ffffff;
+  box-shadow: 0 0 4px rgb(255 255 255 / 80%);
+  animation: star-twinkle 3s ease-in-out infinite;
+}
+
+.pomodoro-scene__stars span:nth-child(1) { top: 8%; left: 12%; animation-delay: 0s; }
+.pomodoro-scene__stars span:nth-child(2) { top: 15%; left: 28%; animation-delay: 0.4s; width: 3px; height: 3px; }
+.pomodoro-scene__stars span:nth-child(3) { top: 6%; left: 45%; animation-delay: 0.8s; }
+.pomodoro-scene__stars span:nth-child(4) { top: 18%; left: 62%; animation-delay: 1.2s; }
+.pomodoro-scene__stars span:nth-child(5) { top: 10%; left: 78%; animation-delay: 0.2s; width: 3px; height: 3px; }
+.pomodoro-scene__stars span:nth-child(6) { top: 22%; left: 88%; animation-delay: 1.6s; }
+.pomodoro-scene__stars span:nth-child(7) { top: 28%; left: 8%; animation-delay: 0.6s; }
+.pomodoro-scene__stars span:nth-child(8) { top: 32%; left: 22%; animation-delay: 1s; }
+.pomodoro-scene__stars span:nth-child(9) { top: 25%; left: 38%; animation-delay: 1.4s; width: 3px; height: 3px; }
+.pomodoro-scene__stars span:nth-child(10) { top: 30%; left: 55%; animation-delay: 0.3s; }
+.pomodoro-scene__stars span:nth-child(11) { top: 20%; left: 70%; animation-delay: 0.9s; }
+.pomodoro-scene__stars span:nth-child(12) { top: 35%; left: 82%; animation-delay: 1.8s; }
+.pomodoro-scene__stars span:nth-child(13) { top: 12%; left: 92%; animation-delay: 0.5s; }
+.pomodoro-scene__stars span:nth-child(14) { top: 38%; left: 15%; animation-delay: 1.1s; }
+.pomodoro-scene__stars span:nth-child(15) { top: 40%; left: 48%; animation-delay: 0.7s; width: 3px; height: 3px; }
+.pomodoro-scene__stars span:nth-child(16) { top: 42%; left: 65%; animation-delay: 1.3s; }
+.pomodoro-scene__stars span:nth-child(17) { top: 36%; left: 35%; animation-delay: 1.7s; }
+.pomodoro-scene__stars span:nth-child(18) { top: 14%; left: 52%; animation-delay: 2s; }
+.pomodoro-scene__stars span:nth-child(19) { top: 26%; left: 95%; animation-delay: 0.1s; }
+.pomodoro-scene__stars span:nth-child(20) { top: 44%; left: 75%; animation-delay: 1.5s; }
+
+@keyframes star-twinkle {
+  0%,
+  100% {
+    opacity: 0.4;
+  }
+
+  50% {
+    opacity: 1;
+  }
+}
+
+.pomodoro-scene__mountains {
+  position: absolute;
+  bottom: 12%;
+  left: 0;
+  z-index: 2;
+  width: 100%;
+  height: 42%;
+}
+
+.pomodoro-scene__mountain {
+  fill: color-mix(in srgb, #3d3058 var(--scene-day-blend), #0a0612);
+  stroke-width: 1.5;
+  vector-effect: non-scaling-stroke;
+}
+
+.pomodoro-scene__mountain--back {
+  stroke: color-mix(in srgb, var(--day-periwinkle) var(--scene-day-blend), var(--night-sky-blue));
+  opacity: calc(0.58 + var(--day-progress) * 0.42 + var(--twilight-peak, 0) * 0.22);
+}
+
+.pomodoro-scene__mountain--mid {
+  stroke: color-mix(in srgb, var(--day-pink) var(--scene-day-blend), var(--night-pink));
+  opacity: calc(0.68 + var(--day-progress) * 0.32 + var(--twilight-peak, 0) * 0.28);
+  filter: drop-shadow(0 0 calc(6px + var(--twilight-peak, 0) * 10px) color-mix(in srgb, var(--night-pink) 55%, transparent));
+}
+
+.pomodoro-scene__mountain--front {
+  stroke: color-mix(in srgb, var(--day-sky-blue) var(--scene-day-blend), var(--night-sky-blue));
+  opacity: calc(0.78 + var(--day-progress) * 0.22 + var(--twilight-peak, 0) * 0.18);
+  filter: drop-shadow(0 0 calc(8px + var(--twilight-peak, 0) * 12px) color-mix(in srgb, var(--night-sky-blue) var(--scene-night-blend), transparent));
+}
+
+.pomodoro-scene__grid {
+  position: absolute;
+  bottom: 0;
+  left: -50%;
+  z-index: 3;
+  width: 200%;
+  height: 42%;
+  opacity: calc(0.12 + var(--day-progress) * 0.78 + var(--twilight-peak, 0) * 0.22);
+  background:
+    linear-gradient(
+      transparent 0%,
+      color-mix(in srgb, var(--night-sky-blue) 25%, transparent) 100%
+    ),
+    repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent 39px,
+      color-mix(in srgb, var(--night-sky-blue) 35%, transparent) 39px,
+      color-mix(in srgb, var(--night-sky-blue) 35%, transparent) 40px
+    ),
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 39px,
+      color-mix(in srgb, var(--night-pink) 25%, transparent) 39px,
+      color-mix(in srgb, var(--night-pink) 25%, transparent) 40px
+    );
+  transform: perspective(280px) rotateX(72deg);
+  transform-origin: center top;
+}
+
+.pomodoro-scene__celestial {
+  position: absolute;
+  inset: 0;
+}
+
+.pomodoro-scene__orb {
+  position: absolute;
+  left: 50%;
+  top: var(--orb-top, 18%);
+  width: clamp(8rem, 28vw, 14rem);
+  height: clamp(8rem, 28vw, 14rem);
+  transform: translateX(-50%);
+  z-index: 1;
+}
+
+/* Sun — warm disc, fades out as night approaches */
+.pomodoro-scene__orb-sun {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  opacity: clamp(0, calc(1 - var(--day-progress) * 0.95), 1);
+  background: linear-gradient(180deg, var(--day-sun-top) 0%, var(--day-sun-bottom) 100%);
+  box-shadow:
+    0 0 calc(28px + var(--twilight-peak, 0) * 24px) rgb(255 159 67 / 0.85),
+    0 0 calc(72px + var(--twilight-peak, 0) * 48px) rgb(255 200 100 / 0.55);
+}
+
+/* Moon — cool crescent, fades in as sun sets */
+.pomodoro-scene__orb-moon {
+  position: absolute;
+  inset: 0;
+  opacity: clamp(0, calc((var(--day-progress) - 0.02) * 0.95), 1);
+}
+
+.pomodoro-scene__orb-moon-disc {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at 32% 28%,
+    var(--moon-surface-top) 0%,
+    var(--moon-surface-bottom) 68%,
+    #9eb0d4 100%
+  );
+  box-shadow:
+    0 0 24px rgb(200 220 255 / 0.55),
+    0 0 56px rgb(160 190 255 / 0.28),
+    inset 5px 5px 14px rgb(255 255 255 / 0.5),
+    inset -8px -8px 18px rgb(100 120 160 / 0.22);
+}
+
+/* Shadow disc carves the crescent — color tracks the sky behind it */
+.pomodoro-scene__orb-moon-disc::before {
+  content: "";
+  position: absolute;
+  top: 4%;
+  right: -10%;
+  width: 76%;
+  height: 76%;
+  border-radius: 50%;
+  background: color-mix(
+    in srgb,
+    var(--night-plum-deep) var(--scene-night-blend),
+    var(--day-sky-mid)
+  );
+}
+
+/* Soft synthwave scanlines on the moon surface */
+.pomodoro-scene__orb-moon-disc::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  opacity: 0.55;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 3px,
+    rgb(0 0 0 / 0.1) 3px,
+    rgb(0 0 0 / 0.1) 5px
+  );
+}
+
+/* ── Timer card ── */
+
 .pomodoro-timer {
+  position: relative;
+  z-index: 2;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -187,9 +504,26 @@ body {
   width: 100%;
   max-width: 24rem;
   padding: var(--space-xl);
-  background-color: var(--color-mode-surface);
-  border: 1px solid var(--color-border);
+  isolation: isolate;
+  background-color: color-mix(
+    in srgb,
+    var(--color-surface) var(--card-surface-opacity, 84%),
+    transparent
+  );
+  border: 1px solid color-mix(in srgb, var(--color-border) 88%, transparent);
   border-radius: var(--radius-xl);
+  backdrop-filter: blur(calc(var(--backdrop-blur, 12) * 1px));
+  -webkit-backdrop-filter: blur(calc(var(--backdrop-blur, 12) * 1px));
+  box-shadow:
+    0 12px 40px color-mix(in srgb, #000 var(--ui-night-blend), rgb(42 31 61 / 14%)),
+    0 0 32px color-mix(in srgb, var(--color-accent) var(--ui-night-blend), transparent),
+    inset 0 1px 0 color-mix(in srgb, #ffffff 8%, transparent);
+  transition:
+    background-color 1.2s ease,
+    border-color 1.2s ease,
+    box-shadow 1.2s ease,
+    backdrop-filter 1.2s ease,
+    -webkit-backdrop-filter 1.2s ease;
 }
 
 .pomodoro-timer__timer {
@@ -208,6 +542,7 @@ body {
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--color-accent);
+  text-shadow: var(--color-mode-glow, none);
 }
 
 .pomodoro-timer__display {
@@ -216,6 +551,8 @@ body {
   font-weight: var(--font-weight-semibold);
   line-height: 1;
   font-variant-numeric: tabular-nums;
+  color: var(--color-accent);
+  text-shadow: var(--color-mode-glow, none);
 }
 
 .pomodoro-timer__controls {
@@ -231,7 +568,8 @@ body {
   font-weight: var(--font-weight-semibold);
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--color-text-heading);
+  color: var(--color-accent);
+  text-shadow: var(--color-mode-glow, none);
 }
 
 .pomodoro-timer__progress {
@@ -264,13 +602,21 @@ body {
   border-left: 1px solid var(--color-border-subtle);
 }
 
-.pomodoro-timer__stat-value {
-  font-family: var(--font-mono);
-  font-size: var(--font-size-md);
-  font-weight: var(--font-weight-semibold);
-  font-variant-numeric: tabular-nums;
-  line-height: var(--line-height-tight);
-  color: var(--color-text-primary);
+.pomodoro-timer__mode,
+.pomodoro-timer__display,
+.pomodoro-timer__section-heading,
+.pomodoro-timer__stat-label,
+.pomodoro-timer__stat-value,
+.pomodoro-timer__progress,
+.settings-panel,
+.settings-panel__label,
+.settings-panel__input {
+  transition:
+    color 1.2s ease,
+    background-color 1.2s ease,
+    border-color 1.2s ease,
+    box-shadow 1.2s ease,
+    text-shadow 1.2s ease;
 }
 
 .pomodoro-timer__stat-label {
@@ -282,13 +628,14 @@ body {
   color: var(--color-text-secondary);
 }
 
-#app[data-mode="work"] .time-display {
-  color: var(--color-work);
-}
-
-#app[data-mode="break"] .time-display,
-#app[data-mode="long-break"] .time-display {
-  color: var(--color-break);
+.pomodoro-timer__stat-value {
+  font-family: var(--font-mono);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-semibold);
+  font-variant-numeric: tabular-nums;
+  line-height: var(--line-height-tight);
+  color: var(--color-accent);
+  text-shadow: var(--color-mode-glow, none);
 }
 
 .pomodoro-timer__button {
@@ -302,30 +649,37 @@ body {
   border-radius: var(--radius-md);
   cursor: pointer;
   transition:
-    background-color 0.15s ease,
-    border-color 0.15s ease,
-    color 0.15s ease;
+    color 1.2s ease,
+    background-color 1.2s ease,
+    border-color 1.2s ease,
+    box-shadow 1.2s ease;
 }
 
 .pomodoro-timer__button--primary {
-  background-color: var(--color-button-primary-bg);
+  background-color: var(--color-accent);
   color: var(--color-button-primary-text);
+  box-shadow: var(--color-mode-glow, none);
 }
 
 .pomodoro-timer__button--primary:hover {
-  background-color: var(--color-button-primary-bg-hover);
+  background-color: var(--color-accent-hover);
+  box-shadow: var(--color-accent-glow-hover);
+  transition-duration: 0.15s;
 }
 
 .pomodoro-timer__button--secondary {
   background-color: var(--color-button-secondary-bg);
   border-color: var(--color-button-secondary-border);
   color: var(--color-button-secondary-text);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.08);
 }
 
 .pomodoro-timer__button--secondary:hover {
-  background-color: var(--color-button-secondary-bg-hover);
-  border-color: var(--color-button-secondary-border-hover);
+  background-color: color-mix(in srgb, var(--color-accent) 14%, var(--color-button-secondary-bg));
+  border-color: var(--color-accent);
   color: var(--color-button-secondary-text);
+  box-shadow: 0 0 12px color-mix(in srgb, var(--color-accent) 22%, transparent);
+  transition-duration: 0.15s;
 }
 
 .pomodoro-timer__button:focus-visible {
@@ -350,7 +704,7 @@ body {
 
 .settings-panel__field {
   display: grid;
-  grid-template-columns: 1fr 6.5rem;
+  grid-template-columns: 1fr 7.25rem;
   align-items: center;
   gap: var(--space-md);
 }
@@ -371,14 +725,15 @@ body {
   text-align: left;
   color: var(--color-input-text);
   background-color: var(--color-input-bg);
-  border: 1px solid var(--color-border);
+  border: 1px solid var(--color-input-border);
   border-radius: var(--radius-md);
   box-shadow: var(--color-input-shadow);
   cursor: text;
   transition:
     border-color 0.15s ease,
     box-shadow 0.15s ease,
-    background-color 0.15s ease;
+    background-color 1.2s ease,
+    color 1.2s ease;
 }
 
 .settings-panel__input::placeholder {
@@ -387,14 +742,34 @@ body {
 
 .settings-panel__input:hover {
   border-color: var(--color-input-border-hover);
-  background-color: var(--color-surface);
+  background-color: color-mix(in srgb, var(--color-input-bg) 85%, var(--color-accent));
 }
 
 .settings-panel__input:focus {
   outline: none;
-  border-color: var(--color-input-border-focus);
-  background-color: var(--color-surface);
+  border-color: var(--color-accent);
   box-shadow: var(--color-input-shadow), 0 0 0 2px var(--color-input-focus-ring);
+}
+
+.settings-panel__input--invalid {
+  border-color: var(--night-pink);
+  box-shadow: var(--color-input-shadow), 0 0 0 2px color-mix(in srgb, var(--night-pink) 30%, transparent);
+}
+
+.settings-panel__feedback {
+  min-height: 1.25rem;
+  margin: 0;
+  font-size: var(--font-size-xs);
+  text-align: center;
+  color: var(--color-text-primary);
+}
+
+.settings-panel__feedback--error {
+  color: var(--night-pink);
+}
+
+.settings-panel__feedback--success {
+  color: var(--color-accent);
 }
 
 .settings-panel__apply {
@@ -415,7 +790,38 @@ body {
 
   50% {
     transform: scale(1.05);
-    opacity: 0.85;
-    color: var(--color-accent);
+    opacity: 0.9;
+    color: var(--night-pink);
+    text-shadow: 0 0 16px color-mix(in srgb, var(--night-pink) 60%, transparent);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #app,
+  #app.ui-snap,
+  .pomodoro-scene__orb,
+  .pomodoro-scene__orb-sun,
+  .pomodoro-scene__orb-moon,
+  .pomodoro-scene__orb-moon-disc,
+  .pomodoro-scene__stars,
+  .pomodoro-scene__grid,
+  .pomodoro-scene__mountain,
+  .pomodoro-timer,
+  .pomodoro-timer__mode,
+  .pomodoro-timer__display,
+  .pomodoro-timer__section-heading,
+  .pomodoro-timer__stat-label,
+  .pomodoro-timer__stat-value,
+  .pomodoro-timer__progress,
+  .settings-panel,
+  .settings-panel__label,
+  .settings-panel__input,
+  .pomodoro-timer__button {
+    transition: none;
+  }
+
+  .pomodoro-scene__stars span {
+    animation: none;
+    opacity: 0.7;
   }
 }
